@@ -2,7 +2,7 @@
 
 ## Description
 
-Ce dépôt contient plusieurs script PowerShell.
+Ce dépôt contient un utilitaire Windows sous Powershell.
 
 ## Prérequis
 
