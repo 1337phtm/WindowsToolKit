@@ -14,7 +14,7 @@ Ce dépôt contient plusieurs script PowerShell.
 1. Cloner le dépôt :
 
    ```powershell
-   git clone https://github.com/Phantom7238/Powershell.git
+   git clone https://github.com/1337phtm/WindowsToolKit.git
    cd Powershell
 2. Vérifier la stratégie d'exécution (si besoin) :
 
