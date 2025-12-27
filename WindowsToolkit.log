@@ -38,6 +38,7 @@
 [2025-12-27 16:28:05] Starting Main Menu
 [2025-12-27 16:28:06] Displaying Zip Archive menu
 [2025-12-27 16:28:07] Starting Main Menu
+<<<<<<< HEAD
 [2025-12-27 16:30:14] Starting Main Menu
 [2025-12-27 16:30:15] Displaying Windows toolbox menu
 [2025-12-27 16:30:16] Starting Main Menu
@@ -52,3 +53,5 @@
 [2025-12-27 16:34:02] Displaying Windows toolbox menu
 [2025-12-27 16:34:03] Starting Main Menu
 [2025-12-27 16:34:04] Exiting Windows Toolkit
+=======
+>>>>>>> 60c8621a53c2b5a65a891367770d94d3e5698f46
