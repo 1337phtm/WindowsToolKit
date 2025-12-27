@@ -8,6 +8,7 @@ Import-Module "$PSScriptRoot\ZipArchive.psm1" -Force
 Import-Module "$PSScriptRoot\HashCheck.psm1" -Force
 
 function Show-MainMenu {
+    Write-Log "Starting Main Menu"
     Clear-Host
     Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Green
     Write-Host "║            WINDOWS TOOLKIT           ║" -ForegroundColor Green
@@ -30,7 +31,11 @@ function Start-MainMenu {
             "1" { Start-ToolboxMenu }
             "2" { Start-ZipMenu }
             "3" { Start-HashMenu }
-            "0" { Clear-Host; return }
+            "0" { 
+                Clear-Host 
+                Write-Log "Exiting Windows Toolkit"; 
+                return 
+            }
             default {
                 Write-Host "Invalid choice." -ForegroundColor Red
                 Stop-Screen
