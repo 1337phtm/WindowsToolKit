@@ -52,14 +52,9 @@ function Show-HashCheck {
 }
 
 #======================================================================
-# HashCheck Copy
+# Fonctions de base
 #======================================================================
 
-function HashCheckCopy {
-#-------------------------------------------------------------------------------------------------------------------Setup----------------------------------------------------------------------------------------------------------------------------------------
-
-Clear-Host
-Show-HashCheck
 #Fonction select dossier via fenêtre
 function Select-Folder($message) {
     $FolderBrowser = New-Object -ComObject Shell.Application
@@ -87,7 +82,16 @@ function Copy-Unique($files, $destination) {
     }
 }
 
-#-------------------------------------------------------------------------------------------------------------------Programme------------------------------------------------------------------------------------------------------------------------------------
+
+
+#======================================================================
+# HashCheck Copy
+#======================================================================
+
+function HashCheckCopy {
+
+Clear-Host
+Show-HashCheck
 
 # Demander combien de dossiers comparer
 [int]$nbFolders = Read-Host "How many repertory do you want to compare ? "
@@ -156,6 +160,59 @@ Invoke-Item $finalFolder
 #======================================================================
 
 function HashCheckVerify { 
+
+Clear-Host
+Show-HashCheck
+
+# Demander combien de dossiers comparer
+[int]$nbFolders = Read-Host "How many repertory do you want to compare ? "
+
+if ($nbFolders -lt 2) {
+    Write-Host ""
+    Write-Host "You need at least 2 cases to compare." -ForegroundColor Red
+    Write-Host ""
+    Pause
+    return
+}
+
+# Sélectionner les dossiers sources
+$folders = @()
+for ($i=1; $i -le $nbFolders; $i++) {
+    $folder = Select-Folder "Choose the folder number $i : "
+    if (-not $folder) { 
+        Write-Host "Selection cancelled." -ForegroundColor Red
+        return
+    }
+    if (!(Test-Path $folder)) { 
+        Write-Error "The folder $folder does not exist."; 
+        Pause
+        return
+    }
+    $folders += $folder
+}
+
+# Récupérer les fichiers et leurs hash pour chaque dossier
+$allHashes = @()
+foreach ($folder in $folders) {
+    $hashes = Get-ChildItem $folder -File -Recurse | ForEach-Object {
+        [PSCustomObject]@{
+            Path = $_.FullName
+            Name = $_.Name
+            Hash = (Get-FileHash $_.FullName -Algorithm SHA256).Hash
+        }
+    }
+    $allHashes += $hashes
+}
+
+# Trouver les fichiers uniques (hash apparaissant une seule fois)
+$uniqueFiles = $allHashes | Group-Object Hash | Where-Object { $_.Count -eq 1 } | ForEach-Object { $_.Group }
+
+Write-Host ""
+Write-Output $uniqueFiles | Format-Table Name, Path -AutoSize
+Write-Host ""
+
+Stop-Screen
+
 }
 
 #======================================================================

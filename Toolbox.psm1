@@ -33,13 +33,13 @@ function Show-ToolboxMenu {
     Write-Log "Displaying Windows toolbox menu"
     Clear-Host
     Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Cyan
-    Write-Host "║            WINDOWS TOOLBOX           ║" -ForegroundColor Cyan
+    Write-Host "║             TOOLBOX MENU             ║" -ForegroundColor Cyan
     Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Cyan
     Write-Host ""
     Write-Host "[1]  System Informations"
-    Write-Host "[2]  Repair Windows"
-    Write-Host "[3]  Diskpart Tools"
-    Write-Host "[4]  Network Tools"
+    Write-Host "[2]  Repair Menu"
+    Write-Host "[3]  Diskpart Menu"
+    Write-Host "[4]  Network Menu"
     Write-Host ""
     Write-Host "[0]  Back to main menu"
     Write-Host ""
@@ -49,7 +49,7 @@ function Show-WindowsRepair {
     Write-Log "Displaying Windows repair menu"
     Clear-Host
     Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Yellow
-    Write-Host "║             WINDOWS REPAIR           ║" -ForegroundColor Yellow
+    Write-Host "║              REPAIR MENU             ║" -ForegroundColor Yellow
     Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Yellow
     Write-Host ""
     Write-Host "[1]  DISM"
@@ -63,7 +63,7 @@ function Show-Diskpart {
     Write-Log "Displaying Diskpart menu" 
     Clear-Host
     Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Magenta
-    Write-Host "║               DISKPART               ║" -ForegroundColor Magenta
+    Write-Host "║            DISKPART MENU             ║" -ForegroundColor Magenta
     Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Magenta
     Write-Host ""
     Write-Host "[1]  (reserved for future tools)"
@@ -77,7 +77,7 @@ function Show-NetworkTools {
     Write-Log "Displaying Network Tools menu"
     Clear-Host
     Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Green
-    Write-Host "║             NETWORK TOOLS            ║" -ForegroundColor Green
+    Write-Host "║             NETWORK MENU             ║" -ForegroundColor Green
     Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Green
     Write-Host ""
     Write-Host "[1]  Network Informations"

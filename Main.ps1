@@ -15,9 +15,9 @@ function Show-MainMenu {
     Write-Host "║          WRITTEN BY 1337phtm         ║" -ForegroundColor Green    
     Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Green
     Write-Host ""
-    Write-Host "[1]  Toolbox" -ForegroundColor Cyan
-    Write-Host "[2]  Zip Archive" #Couleur du premier menu affiché
-    Write-Host "[3]  Hash Check" #Couleur du premier menu affiché
+    Write-Host "[1]  Toolbox Menu" -ForegroundColor Cyan
+    Write-Host "[2]  Zip Archive Menu" #Couleur du premier menu affiché
+    Write-Host "[3]  HashCheck Menu" #Couleur du premier menu affiché
     Write-Host ""
     Write-Host "[0]  Exit"
     Write-Host ""
