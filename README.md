@@ -1,5 +1,10 @@
 # Powershell
 
+![PowerShell](https://img.shields.io/badge/PowerShell-5.1%20%7C%207+-blue)
+![License](https://img.shields.io/badge/License-MIT--Custom-green)
+![Platform](https://img.shields.io/badge/Platform-Windows-lightgrey)
+![Status](https://img.shields.io/badge/Status-Active-success)
+
 ## Description
 
 Ce dépôt contient un utilitaire Windows sous Powershell.
@@ -15,7 +20,7 @@ Ce dépôt contient un utilitaire Windows sous Powershell.
 
    ```powershell
    git clone https://github.com/1337phtm/WindowsToolKit.git
-   cd Powershell
+   cd WindowsToolKit
 2. Lancer l'outil :
 
    ```powershell

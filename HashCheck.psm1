@@ -1,34 +1,168 @@
 ﻿# HashCheck.psm1
 # Outils de hash (comparaison, copie, etc.)
 
-function Show-HashMainMenu {
-    Clear-Host
-    Write-Host "============================="
-    Write-Host "        HASH CHECK"
-    Write-Host "============================="
-    Write-Host "1 - Hash Check Copy"
-    Write-Host "2 - Hash Check Verify"
-    Write-Host "3 - Hash Check Remove"
-    Write-Host "0 - Exit"
-    Write-Host "============================="
-}
+Import-Module "$PSScriptRoot\Setup.psm1" -Force
+
+#======================================================================
+# Main - Menu principal Hashmenu
+#======================================================================
 
 function Start-HashMenu {
-    do {
+    while ($true) {
         Show-HashMainMenu
         $choice = Read-Host "Choose an option"
-
         switch ($choice) {
-            "1" { # HashCheckCopy à implémenter
+            "1" { HashCheckCopy }
+            "2" { HashCheckVerify}
+            "3" { HashCheckRemove}
+            "0" { Clear-Host; return }
+            default {
+                Write-Log "Invalid choice in Hash Check menu"
+                Write-Host "Invalid choice." -ForegroundColor Red
+                Stop-Screen
             }
-            "2" { # HashCheckVerify à implémenter
-            }
-            "3" { # HashCheckRemove à implémenter
-            }
-            "0" { Clear-Host }
-            default { Clear-Host }
         }
-    } until ($choice -eq "0")
+    }
+}
+
+#======================================================================
+# Menus d'affichage
+#======================================================================
+
+function Show-HashMainMenu {
+    Write-Log "Displaying Hash Check menu"
+    Clear-Host
+    Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Cyan
+    Write-Host "║              Hash Check              ║" -ForegroundColor Cyan
+    Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "[1]  Hash Check Copy"
+    Write-Host "[2]  Hash Check Verify"
+    Write-Host "[3]  Hash Check Remove"
+    Write-Host ""
+    Write-Host "[0]  back to main menu"
+    Write-Host ""
+}
+
+function Show-HashCheck {
+    Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Cyan
+    Write-Host "║              Hash Check              ║" -ForegroundColor Cyan
+    Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Cyan
+    Write-Host ""
+}
+
+#======================================================================
+# HashCheck Copy
+#======================================================================
+
+function HashCheckCopy {
+#-------------------------------------------------------------------------------------------------------------------Setup----------------------------------------------------------------------------------------------------------------------------------------
+
+Clear-Host
+Show-HashCheck
+#Fonction select dossier via fenêtre
+function Select-Folder($message) {
+    $FolderBrowser = New-Object -ComObject Shell.Application
+    $Folder = $FolderBrowser.BrowseForFolder(0, $message, 0, 0)
+    if ($Folder) {
+        return $Folder.Items().Item().Path
+    } else {
+        return $null
+    }
+}
+
+# Fonction pour copier les fichiers sans écraser
+function Copy-Unique($files, $destination) {
+    foreach ($file in $files) {
+        $destPath = Join-Path $destination $file.Name
+        $counter = 1
+        while (Test-Path $destPath) {
+            $base = [System.IO.Path]::GetFileNameWithoutExtension($file.Name)
+            $ext = [System.IO.Path]::GetExtension($file.Name)
+            $destPath = Join-Path $destination ("$base" + "_$counter" + "$ext")
+            $counter++
+        }
+
+        Copy-Item $file.Path -Destination $destPath
+    }
+}
+
+#-------------------------------------------------------------------------------------------------------------------Programme------------------------------------------------------------------------------------------------------------------------------------
+
+# Demander combien de dossiers comparer
+[int]$nbFolders = Read-Host "How many repertory do you want to compare ? "
+
+if ($nbFolders -lt 2) {
+    Write-Host ""
+    Write-Host "You need at least 2 cases to compare." -ForegroundColor Red
+    Write-Host ""
+    Pause
+    return
+}
+
+# Sélectionner les dossiers sources
+$folders = @()
+for ($i=1; $i -le $nbFolders; $i++) {
+    $folder = Select-Folder "Choose the folder number $i : "
+    if (-not $folder) { 
+        Write-Host "Selection cancelled." -ForegroundColor Red
+        return
+    }
+    if (!(Test-Path $folder)) { 
+        Write-Error "The folder $folder does not exist."; 
+        Pause
+        return
+    }
+    $folders += $folder
+}
+
+# Sélectionner le dossier final
+$finalFolder = Select-Folder "Choose the final folder : "
+if (-not $finalFolder) { 
+    Write-Host "Selection cancelled." -ForegroundColor Red
+    Pause
+    return
+}
+
+# Récupérer les fichiers et leurs hash pour chaque dossier
+$allHashes = @()
+foreach ($folder in $folders) {
+    $hashes = Get-ChildItem $folder -File -Recurse | ForEach-Object {
+        [PSCustomObject]@{
+            Path = $_.FullName
+            Name = $_.Name
+            Hash = (Get-FileHash $_.FullName -Algorithm SHA256).Hash
+        }
+    }
+    $allHashes += $hashes
+}
+
+# Trouver les fichiers uniques (hash apparaissant une seule fois)
+$uniqueFiles = $allHashes | Group-Object Hash | Where-Object { $_.Count -eq 1 } | ForEach-Object { $_.Group }
+
+
+# Copier les fichiers uniques
+Copy-Unique $uniqueFiles $finalFolder
+
+Write-Host ""
+Write-Output "All unique files have been copied into $finalFolder."
+Write-Host ""
+
+Invoke-Item $finalFolder
+}
+
+#======================================================================
+# HashCheck Verify
+#======================================================================
+
+function HashCheckVerify { 
+}
+
+#======================================================================
+# HashCheck Remove
+#======================================================================
+
+function HashCheckRemove { #R33-3
 }
 
 Export-ModuleMember -Function *-*

@@ -8,6 +8,7 @@ Import-Module "$PSScriptRoot\ZipArchive.psm1" -Force
 Import-Module "$PSScriptRoot\HashCheck.psm1" -Force
 
 function Show-MainMenu {
+    Write-Log "Starting Main Menu"
     Clear-Host
     Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Green
     Write-Host "║            WINDOWS TOOLKIT           ║" -ForegroundColor Green
