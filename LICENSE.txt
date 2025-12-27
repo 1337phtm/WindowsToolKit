@@ -2,7 +2,7 @@ MIT License
 
 English :
 
-Copyright (c) 2025 Phantom__m (Phantom7238)
+Copyright (c) 2025 Phantom__m (1337phtm)
 
 Permission is granted to anyone obtaining a copy of this software
 and associated files to use it freely, subject to the following conditions:
@@ -32,7 +32,7 @@ THE AUTHOR SHALL NOT BE LIABLE FOR ANY DAMAGES RESULTING FROM THE USE OF THE SOF
 
 French :
 
-Copyright (c) 2025 Phantom__m (Phantom7238)
+Copyright (c) 2025 Phantom__m (1337phtm)
 
 Permission est accordée à toute personne obtenant une copie de ce logiciel
 et des fichiers associés de l'utiliser librement, sous réserve des conditions suivantes :
