@@ -32,59 +32,59 @@ function Start-ToolboxMenu {
 function Show-ToolboxMenu {
     Write-Log "Displaying Windows toolbox menu"
     Clear-Host
-    Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Cyan
-    Write-Host "║             TOOLBOX MENU             ║" -ForegroundColor Cyan
-    Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Cyan
+    Write-Host "╔══════════════════════════════════════╗" -ForegroundColor DarkCyan
+    Write-Host "║             TOOLBOX MENU             ║" -ForegroundColor DarkCyan
+    Write-Host "╚══════════════════════════════════════╝" -ForegroundColor DarkCyan
     Write-Host ""
     Write-Host "[1]  System Informations"
-    Write-Host "[2]  Repair Menu"
-    Write-Host "[3]  Diskpart Menu"
-    Write-Host "[4]  Network Menu"
+    Write-Host "[2]  Repair Menu" -ForegroundColor DarkCyan
+    Write-Host "[3]  Diskpart Menu" -ForegroundColor Blue
+    Write-Host "[4]  Network Menu" -ForegroundColor DarkBlue
     Write-Host ""
-    Write-Host "[0]  Back to main menu"
+    Write-Host "[0]  Back to main menu" -ForegroundColor DarkGray
     Write-Host ""
 }
 
 function Show-WindowsRepair {
     Write-Log "Displaying Windows repair menu"
     Clear-Host
-    Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Yellow
-    Write-Host "║              REPAIR MENU             ║" -ForegroundColor Yellow
-    Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Yellow
+    Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Cyan
+    Write-Host "║              REPAIR MENU             ║" -ForegroundColor Cyan
+    Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Cyan
     Write-Host ""
     Write-Host "[1]  DISM"
     Write-Host "[2]  SFC"
     Write-Host ""
-    Write-Host "[0]  Back"
+    Write-Host "[0]  Back" -ForegroundColor DarkGray
     Write-Host ""
 }
 
 function Show-Diskpart {
     Write-Log "Displaying Diskpart menu" 
     Clear-Host
-    Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Magenta
-    Write-Host "║            DISKPART MENU             ║" -ForegroundColor Magenta
-    Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Magenta
+    Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Blue
+    Write-Host "║            DISKPART MENU             ║" -ForegroundColor Blue
+    Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Blue
     Write-Host ""
     Write-Host "[1]  (reserved for future tools)"
     Write-Host "[2]  (reserved for future tools)"
     Write-Host ""
-    Write-Host "[0]  Back"
+    Write-Host "[0]  Back" -ForegroundColor DarkGray
     Write-Host ""
 }
 
 function Show-NetworkTools {
     Write-Log "Displaying Network Tools menu"
     Clear-Host
-    Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Green
-    Write-Host "║             NETWORK MENU             ║" -ForegroundColor Green
-    Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Green
+    Write-Host "╔══════════════════════════════════════╗" -ForegroundColor DarkBlue
+    Write-Host "║             NETWORK MENU             ║" -ForegroundColor DarkBlue
+    Write-Host "╚══════════════════════════════════════╝" -ForegroundColor DarkBlue
     Write-Host ""
     Write-Host "[1]  Network Informations"
     Write-Host "[2]  Ping"
     Write-Host "[3]  SpeedTest"
     Write-Host ""
-    Write-Host "[0]  Back"
+    Write-Host "[0]  Back" -ForegroundColor DarkGray
     Write-Host ""
 }
 

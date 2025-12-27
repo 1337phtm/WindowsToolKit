@@ -15,11 +15,11 @@ function Show-MainMenu {
     Write-Host "║          WRITTEN BY 1337phtm         ║" -ForegroundColor Green    
     Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Green
     Write-Host ""
-    Write-Host "[1]  Toolbox Menu" -ForegroundColor Cyan
-    Write-Host "[2]  Zip Archive Menu" #Couleur du premier menu affiché
-    Write-Host "[3]  HashCheck Menu" #Couleur du premier menu affiché
+    Write-Host "[1]  Toolbox Menu" -ForegroundColor DarkCyan
+    Write-Host "[2]  Zip Archive Menu" -ForegroundColor DarkYellow
+    Write-Host "[3]  HashCheck Menu" -ForegroundColor Magenta
     Write-Host ""
-    Write-Host "[0]  Exit"
+    Write-Host "[0]  Exit" -ForegroundColor DarkGray
     Write-Host ""
 }
 
@@ -34,7 +34,7 @@ function Start-MainMenu {
             "0" { 
                 Clear-Host 
                 Write-Log "Exiting Windows Toolkit"; 
-                return 
+                return
             }
             default {
                 Write-Host "Invalid choice." -ForegroundColor Red

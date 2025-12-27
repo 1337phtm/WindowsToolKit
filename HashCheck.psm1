@@ -32,22 +32,22 @@ function Start-HashMenu {
 function Show-HashMainMenu {
     Write-Log "Displaying Hash Check menu"
     Clear-Host
-    Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Cyan
-    Write-Host "║              Hash Check              ║" -ForegroundColor Cyan
-    Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Cyan
+    Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Magenta
+    Write-Host "║              Hash Check              ║" -ForegroundColor Magenta
+    Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Magenta
     Write-Host ""
     Write-Host "[1]  Hash Check Copy"
     Write-Host "[2]  Hash Check Verify"
     Write-Host "[3]  Hash Check Remove"
     Write-Host ""
-    Write-Host "[0]  back to main menu"
+    Write-Host "[0]  back to main menu" -ForegroundColor DarkGray
     Write-Host ""
 }
 
 function Show-HashCheck {
-    Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Cyan
-    Write-Host "║              Hash Check              ║" -ForegroundColor Cyan
-    Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Cyan
+    Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Magenta
+    Write-Host "║              Hash Check              ║" -ForegroundColor Magenta
+    Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Magenta
     Write-Host ""
 }
 
@@ -196,9 +196,12 @@ $allHashes = @()
 foreach ($folder in $folders) {
     $hashes = Get-ChildItem $folder -File -Recurse | ForEach-Object {
         [PSCustomObject]@{
-            Path = $_.FullName
-            Name = $_.Name
+            Path          = $_.FullName
+            Name          = $_.Name
             Hash = (Get-FileHash $_.FullName -Algorithm SHA256).Hash
+            Size          = $_.Length 
+            LastWriteTime = $_.LastWriteTime
+            #ShortPath     = $_.DirectoryName.Split('\')[-1] + "\" + $_.Name
         }
     }
     $allHashes += $hashes
@@ -208,7 +211,8 @@ foreach ($folder in $folders) {
 $uniqueFiles = $allHashes | Group-Object Hash | Where-Object { $_.Count -eq 1 } | ForEach-Object { $_.Group }
 
 Write-Host ""
-Write-Output $uniqueFiles | Format-Table Name, Path -AutoSize
+#Write-Output $uniqueFiles | Format-Table Name, Size, LastWriteTime, Path -AutoSize #ShortPath 
+Write-Output $uniqueFiles | Format-Table ` @{Label="LastWrite"; Expression={ $_.LastWriteTime }; Width=22 }, ` @{Label="Name"; Expression={ $_.Name }; Width=25 }, ` @{Label="Size"; Expression={ $_.Size }; Width=10 },  ` @{Label="Path"; Expression={ $_.Path }; Width=80 }
 Write-Host ""
 
 Stop-Screen

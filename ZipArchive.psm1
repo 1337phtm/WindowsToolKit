@@ -30,14 +30,14 @@ function Start-ZipMenu {
 function Show-ZipMenu {
     Write-Log "Displaying Zip Archive menu"
     Clear-Host
-    Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Cyan
-    Write-Host "║            Archive Backup            ║" -ForegroundColor Cyan
-    Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Cyan
+    Write-Host "╔══════════════════════════════════════╗" -ForegroundColor DarkYellow
+    Write-Host "║            Archive Backup            ║" -ForegroundColor DarkYellow
+    Write-Host "╚══════════════════════════════════════╝" -ForegroundColor DarkYellow
     Write-Host ""
     Write-Host "[1]  Archive Zip"
     Write-Host "[2]  Archive CurseForge"
     Write-Host ""
-    Write-Host "[0]  Back to main menu"
+    Write-Host "[0]  Back to main menu" -ForegroundColor DarkGray
     Write-Host ""
 }
 
@@ -47,7 +47,7 @@ function Show-ZipMenu {
 
 function Get-Archivebackup {
     Clear-Host
-    Write-Host "============================================ Starting Archive backup ============================================"
+    Write-Host "════════════════════════════════════════════ Starting Archive backup ════════════════════════════════════════════"
     Write-Host ""
 
     # Sélecteur de dossier
@@ -131,7 +131,7 @@ function Get-Archivebackup {
 
 function Get-Curseforgebackup {
 Clear-Host
-Write-Host "============================================ Starting curseforge backup ============================================"
+Write-Host "════════════════════════════════════════════ Starting curseforge backup ════════════════════════════════════════════"
 Write-Host ""
 
 
