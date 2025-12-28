@@ -1,13 +1,18 @@
 ﻿# Main.ps1
 # Point d'entrée de WindowsToolkit
 
-# Charger les modules locaux
+#======================================================================
+# Importation des modules
+#======================================================================
 Import-Module "$PSScriptRoot\Library\Setup.psm1" -Force -DisableNameChecking
 Start-Log
 Import-Module "$PSScriptRoot\Library\Toolbox.psm1" -Force -DisableNameChecking
 Import-Module "$PSScriptRoot\Library\ZipArchive.psm1" -Force -DisableNameChecking
 Import-Module "$PSScriptRoot\Library\HashCheck.psm1" -Force -DisableNameChecking
 
+#======================================================================
+# Affichage du menu principal
+#======================================================================
 function Show-MainMenu {
     Write-Log "Starting Main Menu"
     Clear-Host
@@ -24,6 +29,9 @@ function Show-MainMenu {
     Write-Host ""
 }
 
+#======================================================================
+# Fonction du menu principal
+#======================================================================
 function Start-MainMenu {
     do {
         Show-MainMenu
@@ -48,12 +56,15 @@ function Start-MainMenu {
             }
             default {
                 Write-Host "Invalid choice." -ForegroundColor Red
+                Write-ErrorLog -Source "Main Menu" -Message "Invalid choice : $choice" -Silent
                 Stop-Screen
             }
         }
     } until ($choice -eq "0")
 }
 
-# Lancer le menu principal
+#======================================================================
+# Démarrage dU programme
+#======================================================================
 Write-Log "════════════════════════════════════════════ 1337phtm's Windows Toolkit started ════════════════════════════════════════════"
 Start-MainMenu

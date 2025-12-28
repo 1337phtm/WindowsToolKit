@@ -3,12 +3,28 @@
 #   Auteur : 1337phtm
 # ============================
 
-# --- Préférences globales ---
-$Global:ErrorActionPreference = "Stop"
-$Global:VerbosePreference = "SilentlyContinue" #"Continue" (pour les afficher)
-$Global:DebugPreference = "Continue"
 
-# --- Dossier AppData ---
+# ============================
+# Fonctions de configuration et de log
+# ============================
+# --- Mode Debug ---
+param(
+    [switch]$DebugMode
+)
+
+$Global:DebugMode = $DebugMode.IsPresent
+
+if ($Global:DebugMode) {
+    $Global:VerbosePreference = "Continue"
+    $Global:DebugPreference   = "Continue"
+} else {
+    $Global:VerbosePreference = "SilentlyContinue"
+    $Global:DebugPreference   = "SilentlyContinue"
+}
+
+$Global:ErrorActionPreference = "Stop"
+
+# --- Dossiers ---
 $Global:WTKRoot = Join-Path $env:LOCALAPPDATA "WindowsToolkit"
 $Global:LogDir  = Join-Path $Global:WTKRoot "Logs"
 
@@ -18,14 +34,17 @@ foreach ($dir in @($Global:WTKRoot, $Global:LogDir)) {
     }
 }
 
-# --- Fichier de log principal ---
-$Global:LogFile = Join-Path $Global:LogDir "WindowsToolkit.log"
+# --- Fichiers de log ---
+$Global:LogFile       = Join-Path $Global:LogDir "WindowsToolkit.log"
+$Global:ErrorLogFile  = Join-Path $Global:LogDir "WindowsToolkit.error.log"
 
-if (-not (Test-Path $Global:LogFile)) {
-    New-Item -ItemType File -Path $Global:LogFile | Out-Null
+foreach ($file in @($Global:LogFile, $Global:ErrorLogFile)) {
+    if (-not (Test-Path $file)) {
+        New-Item -ItemType File -Path $file | Out-Null
+    }
 }
 
-# --- Fonction de log centralisée ---
+# --- Fonction de log ---
 function Write-Log {
     param(
         [string]$Message,
@@ -38,19 +57,35 @@ function Write-Log {
     Add-Content -Path $Global:LogFile -Value $line
 }
 
-# --- Gestion globale des erreurs ---
-trap {
-    $msg = $_.Exception.Message
-    Write-Log -Message "TRAP: $msg" -Level "ERROR"
-    Write-Error $msg
-    continue
+# --- Rotation avancée de logs (3 fichiers max) ---
+function Get-Logs {
+    param(
+        [string]$FilePath
+    )
+
+    for ($i = 3; $i -ge 1; $i--) {
+        $old = "$FilePath.$i"
+        $new = "$FilePath." + ($i + 1)
+
+        if (Test-Path $old) {
+            if ($i -eq 3) {
+                Remove-Item $old -Force
+            } else {
+                Rename-Item $old $new -Force
+            }
+        }
+    }
+
+    if (Test-Path $FilePath) {
+        Rename-Item $FilePath "$FilePath.1" -Force
+        New-Item -ItemType File -Path $FilePath | Out-Null
+    }
 }
 
-# --- Compteur d'exécutions + rotation ---
+# --- Compteur d'exécutions ---
 function Start-Log {
 
     $RunCountFile = Join-Path $Global:LogDir "run.count"
-
     if (-not (Test-Path $RunCountFile)) {
         "0" | Out-File $RunCountFile -Encoding UTF8
     }
@@ -59,26 +94,53 @@ function Start-Log {
     $RunCount++
     $RunCount | Out-File $RunCountFile -Encoding UTF8
 
-    if ($RunCount -gt 10) {
-
-        $OldLog = Join-Path $Global:LogDir "WindowsToolkit.log.old"
-
-        "===== Rotation $(Get-Date) =====" | Out-File $OldLog -Encoding UTF8 -Append
-        Get-Content $Global:LogFile | Out-File $OldLog -Encoding UTF8 -Append
-
-        Clear-Content -Path $Global:LogFile
-
+    if ($RunCount -gt 150) {
+        Get-Logs -FilePath $Global:LogFile
+        Get-Logs -FilePath $Global:ErrorLogFile
         "0" | Out-File $RunCountFile -Encoding UTF8
-
-        Write-Host "Log rotated → .log.old created." -ForegroundColor Yellow
     }
 }
 
-# --- Fonction d'affichage ---
+#======================================================================
+# Gestion d'erreurs
+#======================================================================
+
+function Write-ErrorLog {
+    param(
+        [string]$Source,
+        [string]$Message,
+        [switch]$Silent
+    )
+
+    $timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
+    $line = "[$timestamp] [ERROR] [$Source] $Message"
+
+    # Log normal
+    Add-Content -Path $Global:LogFile -Value $line
+
+    # Log des erreurs
+    Add-Content -Path $Global:ErrorLogFile -Value $line
+
+    # Message propre pour l'utilisateur (si pas Silent)
+    if(-not $Silent) {
+        Write-Host "❌ Une erreur est survenue dans $Source. Consultez error.log pour plus de détails." -ForegroundColor Red
+    }
+}   
+
+
+
+#======================================================================
+# Fonctions d'affichage
+#======================================================================
+
 function Stop-Screen {
     Write-Host ""
     Read-Host "Press Enter to continue..."
 }
 
-# --- Export des fonctions publiques ---
-Export-ModuleMember -Function Write-Log, Start-Log, Stop-Screen
+
+#======================================================================
+# Export
+#======================================================================
+
+Export-ModuleMember -Function Write-Log, Start-Log, Stop-Screen, Write-ErrorLog

@@ -28,6 +28,7 @@ function Start-ToolboxMenu {
             "0" { return }
             default {
                 Write-Host "Invalid choice." -ForegroundColor Red
+                Write-ErrorLog -Source "ToolBox Menu" -Message "Invalid choice : $choice" -Silent
                 Stop-Screen
             }
         }
@@ -146,6 +147,7 @@ function Get-FixWin {
             "0" { return }
             default {
                 Write-Host "Invalid choice." -ForegroundColor Red
+                Write-ErrorLog -Source "Windows Repair" -Message "Invalid choice : $choice" -Silent
                 Stop-Screen
             }
         }
@@ -167,6 +169,7 @@ function Get-Diskpart {
             "0" { return }
             default {
                 Write-Host "Invalid choice." -ForegroundColor Red
+                Write-ErrorLog -Source "Diskpart" -Message "Invalid choice : $choice" -Silent
                 Stop-Screen
             }
         }
@@ -189,6 +192,7 @@ function Get-NetworkTools {
             "0" { return }
             default {
                 Write-Host "Invalid choice." -ForegroundColor Red
+                Write-ErrorLog -Source "Network Tools" -Message "Invalid choice : $choice" -Silent
                 Stop-Screen
             }
         }
@@ -204,9 +208,17 @@ function DISM {
     Write-Host ""
     Write-Host "Launching DISM /Online /Cleanup-Image /RestoreHealth..." -ForegroundColor Yellow
     Write-Host ""
-
-    Start-Process -FilePath "dism.exe" -ArgumentList "/Online","/Cleanup-Image","/RestoreHealth" -Verb RunAs -Wait
-
+    try {
+        Start-Process -FilePath "dism.exe" -ArgumentList "/Online","/Cleanup-Image","/RestoreHealth" -Verb RunAs -Wait
+        if ($LASTEXITCODE -ne 0) {
+            throw "DISM failed with exit code $LASTEXITCODE"
+        }
+    }
+    catch {
+        Write-ErrorLog -Source "TOOLBOX | DISM" -Message $_.Exception.Message
+        Stop-Screen
+        return
+    }
     Write-Host ""
     Write-Host "DISM completed." -ForegroundColor Green
     Write-Log "DISM finished"
@@ -218,12 +230,20 @@ function SFC {
     Write-Host ""
     Write-Host "Launching SFC /scannow..." -ForegroundColor Yellow
     Write-Host ""
-
-    Start-Process -FilePath "sfc.exe" -ArgumentList "/scannow" -Verb RunAs -Wait
-
+    try {
+        Start-Process -FilePath "sfc.exe" -ArgumentList "/scannow" -Verb RunAs -Wait
+        if ($LASTEXITCODE -ne 0) {
+            throw "SFC failed with exit code $LASTEXITCODE"
+        }
+    }
+    catch { 
+        Write-ErrorLog -Source "TOOLBOX | SFC" -Message $_.Exception.Message
+        Stop-Screen
+        return
+    }
     Write-Host ""
     Write-Host "SFC completed." -ForegroundColor Green
-    Write-Log "SFC finished"
+    Write-Log "SFC finished" 
     Stop-Screen
 }
 
@@ -235,28 +255,34 @@ function Get-NetworkInformations {
     Clear-Host
     Write-Log "Displaying network informations"
 
-    $adapters = Get-NetAdapter
-
-    Write-Host ""
-    Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Green
-    Write-Host "║           NETWORK INFORMATIONS       ║" -ForegroundColor Green
-    Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Green
-    Write-Host ""
-
-    foreach ($adapter in $adapters) {
-        $ip = Get-NetIPAddress -InterfaceIndex $adapter.ifIndex -AddressFamily IPv4 -ErrorAction SilentlyContinue
-
-        Write-Host "----------------------------------------"
-        Write-Host " Adapter name : $($adapter.Name)"
-        Write-Host " Description  : $($adapter.InterfaceDescription)"
-        Write-Host " State        : $($adapter.Status)"
-        Write-Host " IPv4 Address : $($ip.IPAddress)"
-        Write-Host " MAC Address  : $($adapter.MacAddress)"
-        Write-Host " Link speed   : $($adapter.LinkSpeed)"
+    try {
+        $adapters = Get-NetAdapter -ErrorAction Stop
+        
         Write-Host ""
-    }
+        Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Green
+        Write-Host "║           NETWORK INFORMATIONS       ║" -ForegroundColor Green
+        Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Green
+        Write-Host ""
 
-    Stop-Screen
+        foreach ($adapter in $adapters) {
+            $ip = Get-NetIPAddress -InterfaceIndex $adapter.ifIndex -AddressFamily IPv4 -ErrorAction SilentlyContinue
+
+            Write-Host "════════════════════════════════════════"
+            Write-Host " Adapter name : $($adapter.Name)"
+            Write-Host " Description  : $($adapter.InterfaceDescription)"
+            Write-Host " State        : $($adapter.Status)"
+            Write-Host " IPv4 Address : $($ip.IPAddress)"
+            Write-Host " MAC Address  : $($adapter.MacAddress)"
+            Write-Host " Max Link speed : $($adapter.LinkSpeed)"
+            Write-Host ""
+            }
+        }
+        catch {
+            Write-ErrorLog -Source "Network Informations" -Message $_.Exception.Message
+            Stop-Screen
+            return
+        }
+        Stop-Screen
 }
 
 #======================================================================
@@ -291,12 +317,12 @@ function Test-Ping {
         }
     }
     catch {
-        Write-Host "Ping failed for $target" -ForegroundColor Red
-        Write-Log "Ping $target : FAIL"
-    }
-
+        Write-ErrorLog -Source "Ping to $target" -Message $_.Exception.Message
+        Stop-Screen
+        return
+        }
     Stop-Screen
-}
+    }
 
 #======================================================================
 # NetworkTools -- SpeedTest
@@ -328,6 +354,7 @@ function Get-SpeedTest {
 
     if (-not (Test-Internet)) {
         Write-Host "No internet access. Aborting SpeedTest." -ForegroundColor Red
+        Write-ErrorLog -Source "SpeedTest" -Message "No internet access detected."
         Stop-Screen
         return
     }
@@ -335,34 +362,56 @@ function Get-SpeedTest {
     Write-Host "Internet OK." -ForegroundColor Green
     Write-Host ""
 
-    # Installer uniquement si absent via winget
-    if (-not (winget list --id $SpeedtestId | Select-String $SpeedtestId)) {
-        Write-Host "Installing Ookla Speedtest CLI via winget..." -ForegroundColor Yellow
+    try {
+        # Installer uniquement si absent via winget
+        if (-not (winget list --id $SpeedtestId | Select-String $SpeedtestId)) {
+            Write-Host "Installing Ookla Speedtest CLI via winget..." -ForegroundColor Yellow
+            Write-Host ""
+
+            winget install $SpeedtestId `
+                --accept-source-agreements `
+                --accept-package-agreements `
+                --silent
+
+            if ($LASTEXITCODE -ne 0) {
+                throw "Winget failed to install Speedtest (exit code $LASTEXITCODE)"
+            }
+        }
+
         Write-Host ""
-        winget install $SpeedtestId `
-          --accept-source-agreements `
-          --accept-package-agreements `
-          --silent
+        Write-Host "Running SpeedTest..." -ForegroundColor Cyan
+        Write-Host ""
+
+        speedtest --accept-license --accept-gdpr
+
+        if ($LASTEXITCODE -ne 0) {
+            throw "Speedtest CLI failed (exit code $LASTEXITCODE)"
+        }
+
+        Write-Host ""
+
+        # Désinstaller proprement
+        if (winget list --id $SpeedtestId | Select-String $SpeedtestId) {
+            Write-Host "Cleaning up Speedtest installation..." -ForegroundColor Yellow
+
+            winget uninstall $SpeedtestId `
+                --silent `
+                --accept-source-agreements
+
+            if ($LASTEXITCODE -ne 0) {
+                throw "Winget failed to uninstall Speedtest (exit code $LASTEXITCODE)"
+            }
+        }
+
+        Write-Log "SpeedTest finished"
+    }
+    catch {
+        Write-ErrorLog -Source "SpeedTest" -Message $_.Exception.Message
     }
 
-    Write-Host ""
-    Write-Host "Running SpeedTest..." -ForegroundColor Cyan
-    Write-Host ""
-
-    speedtest --accept-license --accept-gdpr
-    Write-Host ""
-
-    # Désinstaller proprement
-    if (winget list --id $SpeedtestId | Select-String $SpeedtestId) {
-        Write-Host "Cleaning up Speedtest installation..." -ForegroundColor Yellow
-        winget uninstall $SpeedtestId `
-          --silent `
-          --accept-source-agreements
-    }
-
-    Write-Log "SpeedTest finished"
     Stop-Screen
 }
+
 
 #======================================================================
 # Export

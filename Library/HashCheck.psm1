@@ -12,20 +12,20 @@ function Start-HashMenu {
         switch ($choice) {
             "1" { 
                 HashCheckCopy 
-                Write-Log "Choice 1 selected: Hash Check Copy"
+                Write-Log "Choice 1 selected : Hash Check Copy"
             }
             "2" { 
                 HashCheckVerify 
-                Write-Log "Choice 2 selected: Hash Check Verify"
+                Write-Log "Choice 2 selected : Hash Check Verify"
             }
             "3" { 
                 HashCheckRemove
-                Write-Log "Choice 3 selected: Hash Check Remove"
+                Write-Log "Choice 3 selected : Hash Check Remove"
             }
             "0" { return }
             default {
-                Write-Log "Invalid choice in Hash Check menu"
                 Write-Host "Invalid choice." -ForegroundColor Red
+                Write-ErrorLog -Source "Hash Check Menu" -Message "Invalid choice : $choice" -Silent
                 Stop-Screen
             }
         }
@@ -64,14 +64,18 @@ function Show-HashCheck {
 
 #Fonction select dossier via fenêtre
 function Select-Folder($message) {
-    $FolderBrowser = New-Object -ComObject Shell.Application
-    $Folder = $FolderBrowser.BrowseForFolder(0, $message, 0, 0)
-    if ($Folder) {
-        return $Folder.Items().Item().Path
-    } else {
-        return $null
-    }
+
+        $FolderBrowser = New-Object -ComObject Shell.Application
+        $Folder = $FolderBrowser.BrowseForFolder(0, $message, 0, 0)
+        if ($Folder) {
+            return $Folder.Items().Item().Path
+        } 
+        else {
+            Write-ErrorLog -Source "HASH CHECK | SELECTFOLDER" -Message "User canceled folder selection" -Silent
+            return "CANCELED"
+        }
 }
+
 
 # Fonction pour copier les fichiers sans écraser
 function Copy-Unique($files, $destination) {
@@ -84,7 +88,6 @@ function Copy-Unique($files, $destination) {
             $destPath = Join-Path $destination ("$base" + "_$counter" + "$ext")
             $counter++
         }
-
         Copy-Item $file.Path -Destination $destPath
     }
 }
@@ -107,6 +110,7 @@ if ($nbFolders -lt 2) {
     Write-Host ""
     Write-Host "You need at least 2 cases to compare." -ForegroundColor Red
     Write-Host ""
+    Write-ErrorLog -Source "HASH CHECK | SELECTFOLDER" -Message "User choose less than 2 cases to compare." -Silent
     Pause
     return
 }
@@ -115,25 +119,17 @@ if ($nbFolders -lt 2) {
 $folders = @()
 for ($i=1; $i -le $nbFolders; $i++) {
     $folder = Select-Folder "Choose the folder number $i : "
-    if (-not $folder) { 
-        Write-Host "Selection cancelled." -ForegroundColor Red
-        return
-    }
-    if (!(Test-Path $folder)) { 
-        Write-Error "The folder $folder does not exist."; 
-        Pause
-        return
+    if ($folder -eq "CANCELED") {
+        return  # ← quitte la fonction appelante immédiatement
     }
     $folders += $folder
 }
 
 # Sélectionner le dossier final
 $finalFolder = Select-Folder "Choose the final folder : "
-if (-not $finalFolder) { 
-    Write-Host "Selection cancelled." -ForegroundColor Red
-    Pause
-    return
-}
+    if ($finalFolder -eq "CANCELED") {
+        return  # ← quitte la fonction appelante immédiatement
+    }
 
 # Récupérer les fichiers et leurs hash pour chaque dossier
 $allHashes = @()
@@ -178,6 +174,7 @@ if ($nbFolders -lt 2) {
     Write-Host ""
     Write-Host "You need at least 2 cases to compare." -ForegroundColor Red
     Write-Host ""
+    Write-ErrorLog -Source "HASH CHECK | SELECTFOLDER" -Message "User choose less than 2 cases to compare." -Silent
     Pause
     return
 }
@@ -186,14 +183,8 @@ if ($nbFolders -lt 2) {
 $folders = @()
 for ($i=1; $i -le $nbFolders; $i++) {
     $folder = Select-Folder "Choose the folder number $i : "
-    if (-not $folder) { 
-        Write-Host "Selection cancelled." -ForegroundColor Red
-        return
-    }
-    if (!(Test-Path $folder)) { 
-        Write-Error "The folder $folder does not exist."; 
-        Pause
-        return
+    if ($folder -eq "CANCELED") {
+        return  # ← quitte la fonction appelante immédiatement
     }
     $folders += $folder
 }
@@ -230,7 +221,11 @@ Stop-Screen
 # HashCheck Remove
 #======================================================================
 
-function HashCheckRemove { #R33-3
+function HashCheckRemove { 
 }
+
+#======================================================================
+# Export
+#======================================================================
 
 Export-ModuleMember -Function *-*
