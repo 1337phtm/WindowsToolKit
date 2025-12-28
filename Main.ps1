@@ -3,6 +3,7 @@
 
 # Charger les modules locaux
 Import-Module "$PSScriptRoot\Library\Setup.psm1" -Force -DisableNameChecking
+Start-Log
 Import-Module "$PSScriptRoot\Library\Toolbox.psm1" -Force -DisableNameChecking
 Import-Module "$PSScriptRoot\Library\ZipArchive.psm1" -Force -DisableNameChecking
 Import-Module "$PSScriptRoot\Library\HashCheck.psm1" -Force -DisableNameChecking
@@ -54,7 +55,5 @@ function Start-MainMenu {
 }
 
 # Lancer le menu principal
-$RunCount++
-Start-Log
 Write-Log "════════════════════════════════════════════ 1337phtm's Windows Toolkit started ════════════════════════════════════════════"
 Start-MainMenu

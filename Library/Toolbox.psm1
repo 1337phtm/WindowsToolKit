@@ -1,8 +1,6 @@
 ﻿# Toolbox.psm1
 # Outils système Windows (DISM, SFC, réseau, etc.)
 
-Import-Module ".\Library\Setup.psm1" -Force
-
 #======================================================================
 # Main - Menu principal Toolbox
 #======================================================================
@@ -27,7 +25,7 @@ function Start-ToolboxMenu {
                 Get-NetworkTools 
                 Write-Log "Choice 4 selected: Network Menu"
             }
-            "0" { Clear-Host; return }
+            "0" { return }
             default {
                 Write-Host "Invalid choice." -ForegroundColor Red
                 Stop-Screen

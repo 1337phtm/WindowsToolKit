@@ -1,8 +1,6 @@
 ﻿# HashCheck.psm1
 # Outils de hash (comparaison, copie, etc.)
 
-Import-Module ".\Library\Setup.psm1" -Force
-
 #======================================================================
 # Main - Menu principal Hashmenu
 #======================================================================
@@ -24,7 +22,7 @@ function Start-HashMenu {
                 HashCheckRemove
                 Write-Log "Choice 3 selected: Hash Check Remove"
             }
-            "0" { Clear-Host; return }
+            "0" { return }
             default {
                 Write-Log "Invalid choice in Hash Check menu"
                 Write-Host "Invalid choice." -ForegroundColor Red

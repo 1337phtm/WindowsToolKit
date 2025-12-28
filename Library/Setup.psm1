@@ -1,84 +1,84 @@
-﻿# Setup.psm1
-# Fonctions communes (affichage, logs, etc.)
+﻿# ============================
+#   WindowsToolkit - Setup
+#   Auteur : 1337phtm
+# ============================
 
-#======================================================================
-# Fonctions de log
-#======================================================================
+# --- Préférences globales ---
+$Global:ErrorActionPreference = "Stop"
+$Global:VerbosePreference = "SilentlyContinue" #"Continue" (pour les afficher)
+$Global:DebugPreference = "Continue"
 
-# Répertoire parent du script
-$ParentDir = Split-Path $PSScriptRoot -Parent
+# --- Dossier AppData ---
+$Global:WTKRoot = Join-Path $env:LOCALAPPDATA "WindowsToolkit"
+$Global:LogDir  = Join-Path $Global:WTKRoot "Logs"
 
-# Dossier log
-$LogDir = Join-Path $ParentDir "WTK log"
-
-# Création si nécessaire
-if (!(Test-Path $LogDir)) {
-    New-Item -ItemType Directory -Path $LogDir | Out-Null
+foreach ($dir in @($Global:WTKRoot, $Global:LogDir)) {
+    if (-not (Test-Path $dir)) {
+        New-Item -ItemType Directory -Path $dir | Out-Null
+    }
 }
 
-# Fichier log global
-$Global:LogFile = Join-Path $LogDir "WindowsToolkit.log"
+# --- Fichier de log principal ---
+$Global:LogFile = Join-Path $Global:LogDir "WindowsToolkit.log"
 
+if (-not (Test-Path $Global:LogFile)) {
+    New-Item -ItemType File -Path $Global:LogFile | Out-Null
+}
+
+# --- Fonction de log centralisée ---
 function Write-Log {
     param(
-        [string]$Message
+        [string]$Message,
+        [string]$Level = "INFO"
     )
 
-    $date = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-    Add-Content -Path $Global:LogFile -Value "[$date] $Message"
+    $timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
+    $line = "[$timestamp] [$Level] $Message"
 
+    Add-Content -Path $Global:LogFile -Value $line
 }
 
-#======================================================================
-# Fonction de gestion du log avec rotation
-#======================================================================
-function Start-Log { 
-# Fichier compteur
-$RunCountFile = Join-Path $LogDir "run.count"
-
-# Si le fichier n'existe pas, on le crée avec 0
-if (!(Test-Path $RunCountFile)) {
-    "0" | Out-File $RunCountFile -Encoding UTF8
+# --- Gestion globale des erreurs ---
+trap {
+    $msg = $_.Exception.Message
+    Write-Log -Message "TRAP: $msg" -Level "ERROR"
+    Write-Error $msg
+    continue
 }
 
-# Lire le compteur
-$RunCount = [int](Get-Content $RunCountFile)
+# --- Compteur d'exécutions + rotation ---
+function Start-Log {
 
-# Incrémenter
-$RunCount++
+    $RunCountFile = Join-Path $Global:LogDir "run.count"
 
-# Sauvegarder
-$RunCount | Out-File $RunCountFile -Encoding UTF8
-
-# Si plus de 10 exécutions → rotation du log
-if ($RunCount -gt 10) {
-
-    $OldLog = Join-Path $LogDir "WindowsToolkit.log.old"
-
-    # Copier le contenu dans .old
-    if (Test-Path $Global:LogFile) {
-        "===== Rotation $(Get-Date) =====" | Out-File $OldLog -Encoding UTF8 -Append
-        Get-Content $Global:LogFile | Out-File $OldLog -Encoding UTF8 -Append
+    if (-not (Test-Path $RunCountFile)) {
+        "0" | Out-File $RunCountFile -Encoding UTF8
     }
 
-    # Vider le log principal
-    "" | Out-File -FilePath $Global:LogFile -Encoding UTF8
+    $RunCount = [int](Get-Content $RunCountFile)
+    $RunCount++
+    $RunCount | Out-File $RunCountFile -Encoding UTF8
 
-    # Reset compteur
-    "0" | Out-File $RunCountFile -Encoding UTF8
+    if ($RunCount -gt 10) {
 
-    Write-Host "Log rotated → .log.old created." -ForegroundColor Yellow
+        $OldLog = Join-Path $Global:LogDir "WindowsToolkit.log.old"
+
+        "===== Rotation $(Get-Date) =====" | Out-File $OldLog -Encoding UTF8 -Append
+        Get-Content $Global:LogFile | Out-File $OldLog -Encoding UTF8 -Append
+
+        Clear-Content -Path $Global:LogFile
+
+        "0" | Out-File $RunCountFile -Encoding UTF8
+
+        Write-Host "Log rotated → .log.old created." -ForegroundColor Yellow
+    }
 }
-}
 
-#======================================================================
-# Fonctions d'affichage
-#======================================================================
-
+# --- Fonction d'affichage ---
 function Stop-Screen {
     Write-Host ""
     Read-Host "Press Enter to continue..."
 }
 
-Export-ModuleMember -Function *-*
-Export-ModuleMember -Function $RunCount
+# --- Export des fonctions publiques ---
+Export-ModuleMember -Function Write-Log, Start-Log, Stop-Screen

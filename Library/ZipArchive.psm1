@@ -1,8 +1,6 @@
 ﻿# ZipArchive.psm1
 # Gestion des sauvegardes / archives
 
-Import-Module ".\Library\Setup.psm1" -Force
-
 #======================================================================
 # Main - Menu principal Ziparchive
 #======================================================================
@@ -20,7 +18,7 @@ function Start-ZipMenu {
                 Get-CurseforgeBackup 
                 Write-log "Choice 2 selected: CurseForge Backup"  
             }
-            "0" { Clear-Host; return }
+            "0" { return }
             default {
                 Write-Host "Invalid choice." -ForegroundColor Red
                 Stop-Screen
