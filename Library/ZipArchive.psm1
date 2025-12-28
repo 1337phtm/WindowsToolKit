@@ -1,7 +1,7 @@
 ﻿# ZipArchive.psm1
 # Gestion des sauvegardes / archives
 
-Import-Module "$PSScriptRoot\Setup.psm1" -Force
+Import-Module ".\Library\Setup.psm1" -Force
 
 #======================================================================
 # Main - Menu principal Ziparchive
@@ -12,8 +12,14 @@ function Start-ZipMenu {
         Show-ZipMenu
         $choice = Read-Host "Choose an option"
         switch ($choice) {
-            "1" { Get-Archivebackup }
-            "2" { Get-CurseforgeBackup}
+            "1" { 
+                Get-Archivebackup 
+                Write-log "Choice 1 selected: Archive Backup"  
+            }
+            "2" { 
+                Get-CurseforgeBackup 
+                Write-log "Choice 2 selected: CurseForge Backup"  
+            }
             "0" { Clear-Host; return }
             default {
                 Write-Host "Invalid choice." -ForegroundColor Red

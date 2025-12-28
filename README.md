@@ -7,7 +7,7 @@
 
 ## Description
 
-Ce dépôt contient un utilitaire Windows sous Powershell.
+Ce dépôt contient un utilitaire Windows (WindowsToolKit : WTK) sous Powershell.
 
 ## Prérequis
 

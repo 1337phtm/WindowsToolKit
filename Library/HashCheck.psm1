@@ -1,7 +1,7 @@
 ﻿# HashCheck.psm1
 # Outils de hash (comparaison, copie, etc.)
 
-Import-Module "$PSScriptRoot\Setup.psm1" -Force
+Import-Module ".\Library\Setup.psm1" -Force
 
 #======================================================================
 # Main - Menu principal Hashmenu
@@ -12,9 +12,18 @@ function Start-HashMenu {
         Show-HashMainMenu
         $choice = Read-Host "Choose an option"
         switch ($choice) {
-            "1" { HashCheckCopy }
-            "2" { HashCheckVerify}
-            "3" { HashCheckRemove}
+            "1" { 
+                HashCheckCopy 
+                Write-Log "Choice 1 selected: Hash Check Copy"
+            }
+            "2" { 
+                HashCheckVerify 
+                Write-Log "Choice 2 selected: Hash Check Verify"
+            }
+            "3" { 
+                HashCheckRemove
+                Write-Log "Choice 3 selected: Hash Check Remove"
+            }
             "0" { Clear-Host; return }
             default {
                 Write-Log "Invalid choice in Hash Check menu"

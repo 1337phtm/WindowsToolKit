@@ -1,7 +1,7 @@
 ﻿# Toolbox.psm1
 # Outils système Windows (DISM, SFC, réseau, etc.)
 
-Import-Module "$PSScriptRoot\Setup.psm1" -Force
+Import-Module ".\Library\Setup.psm1" -Force
 
 #======================================================================
 # Main - Menu principal Toolbox
@@ -12,10 +12,21 @@ function Start-ToolboxMenu {
         Show-ToolboxMenu
         $choice = Read-Host "Select an option"
         switch ($choice) {
-            "1" { Get-SystemInfo }
-            "2" { Get-FixWin }
-            "3" { Get-Diskpart }
-            "4" { Get-NetworkTools }
+            "1" { 
+                Get-SystemInfo 
+                Write-Log "Choice 1 selected: System Informations"
+            }
+            "2" { 
+                Get-FixWin 
+                Write-Log "Choice 2 selected: Repair Menu"
+            }
+            "3" { Get-Diskpart 
+                Write-Log "Choice 3 selected: Diskpart Menu"
+            }
+            "4" { 
+                Get-NetworkTools 
+                Write-Log "Choice 4 selected: Network Menu"
+            }
             "0" { Clear-Host; return }
             default {
                 Write-Host "Invalid choice." -ForegroundColor Red

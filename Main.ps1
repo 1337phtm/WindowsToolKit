@@ -2,10 +2,10 @@
 # Point d'entrée de WindowsToolkit
 
 # Charger les modules locaux
-Import-Module "$PSScriptRoot\Setup.psm1" -Force
-Import-Module "$PSScriptRoot\Toolbox.psm1" -Force
-Import-Module "$PSScriptRoot\ZipArchive.psm1" -Force
-Import-Module "$PSScriptRoot\HashCheck.psm1" -Force
+Import-Module "$PSScriptRoot\Library\Setup.psm1" -Force -DisableNameChecking
+Import-Module "$PSScriptRoot\Library\Toolbox.psm1" -Force -DisableNameChecking
+Import-Module "$PSScriptRoot\Library\ZipArchive.psm1" -Force -DisableNameChecking
+Import-Module "$PSScriptRoot\Library\HashCheck.psm1" -Force -DisableNameChecking
 
 function Show-MainMenu {
     Write-Log "Starting Main Menu"
@@ -28,12 +28,21 @@ function Start-MainMenu {
         Show-MainMenu
         $choice = Read-Host "Choose an option"
         switch ($choice) {
-            "1" { Start-ToolboxMenu }
-            "2" { Start-ZipMenu }
-            "3" { Start-HashMenu }
+            "1" { 
+                Start-ToolboxMenu 
+                Write-Log "Choice 1 selected: Toolbox Menu"
+            }
+            "2" { 
+                Start-ZipMenu 
+                Write-Log "Choice 2 selected: Zip Archive Menu"
+            }
+            "3" { 
+                Start-HashMenu 
+                Write-Log "Choice 3 selected: HashCheck Menu"
+            }
             "0" { 
                 Clear-Host 
-                Write-Log "Exiting Windows Toolkit"; 
+                Write-Log "════════════════════════════════════════════ Exiting 1337phtm's Windows Toolkit ════════════════════════════════════════════"; 
                 return
             }
             default {
@@ -45,4 +54,7 @@ function Start-MainMenu {
 }
 
 # Lancer le menu principal
+$RunCount++
+Start-Log
+Write-Log "════════════════════════════════════════════ 1337phtm's Windows Toolkit started ════════════════════════════════════════════"
 Start-MainMenu
