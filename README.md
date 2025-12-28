@@ -7,29 +7,48 @@
 
 ## Description
 
-Ce dépôt contient un utilitaire Windows (WindowsToolKit : WTK) sous Powershell.
+Ce dépôt contient un utilitaire Windows (WindowsToolKit : WTK) sous Powershell. Il regroupe plusieurs modules permettant d’automatiser, diagnostiquer et maintenir un système Windows de manière simple et efficace. 
 
-## Prérequis
+## 📋 Prérequis 
+- Windows 10 / 11 
+- PowerShell **5.1** ou **7+** 
+- Les Autorisation pour exécuter des scripts : 
 
-- PowerShell 5.1 ou PowerShell 7+
-- Les droits nécessaires pour exécuter des scripts sur la machine
+```powershell 
+   Get-ExecutionPolicy
+   Set-ExecutionPolicy RemoteSigned CurrentUser
+```
+## 📥 Installation et MàJ
 
-## 📥 Installation
+0. Si git n'est pas installé :
+   ````powershell
+   winget install --id Git.Git -e --source winget
+   ````
 
 1. Cloner le dépôt :
 
    ```powershell
    git clone https://github.com/1337phtm/WindowsToolKit.git
    cd WindowsToolKit
+   ```
+   1.1 Mettre à jour le dépôt :
+   
+   ````powershell
+   git pull origin main
+   ````
+   - Il faut d'abord se placer dans le répertoire "WindowsToolKit"
+
 2. Lancer l'outil :
 
    ```powershell
    .\Main.ps1
-# 🚀 WindowsToolkit 
+   ```
 
-Toolkit Windows en PowerShell développé par **Phantom__m (1337phtm)**. 
-Il regroupe plusieurs modules permettant d’automatiser, diagnostiquer et maintenir un système Windows de manière simple et efficace. 
-
+3. Lancer l'outil en mode debug :
+   ```powershell
+   .\Main.ps1 -DebugMode
+   ```
+   
 
 ## 🧰 Fonctionnalités 
 
@@ -41,7 +60,6 @@ Il regroupe plusieurs modules permettant d’automatiser, diagnostiquer et maint
 
 ### 📦 ZipArchive 
 - Création d’archives ZIP 
-- Sauvegardes automatisées 
 - Export de dossiers (ex : CurseForge) 
 
 ### 🔐 HashCheck 
@@ -52,14 +70,7 @@ Il regroupe plusieurs modules permettant d’automatiser, diagnostiquer et maint
 ### ⚙️ Setup 
 - Fonctions utilitaires communes 
 - Gestion des logs 
+- Gestion des erreurs
 - Fonctions d’affichage (Stop‑Screen, etc.) 
 
 
-## 📋 Prérequis 
-- Windows 10 / 11 
-- PowerShell **5.1** ou **7+** 
-- Autorisation d’exécuter des scripts : 
-
-```powershell 
-Get-ExecutionPolicy
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
