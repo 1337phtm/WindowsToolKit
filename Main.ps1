@@ -18,7 +18,7 @@ function Show-MainMenu {
     Clear-Host
     Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Green
     Write-Host "║            WINDOWS TOOLKIT           ║" -ForegroundColor Green
-    Write-Host "║          WRITTEN BY 1337phtm         ║" -ForegroundColor Green    
+    Write-Host "║          WRITTEN BY 1337phtm         ║" -ForegroundColor Green
     Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Green
     Write-Host ""
     Write-Host "[1]  Toolbox Menu" -ForegroundColor DarkCyan
@@ -37,21 +37,21 @@ function Start-MainMenu {
         Show-MainMenu
         $choice = Read-Host "Choose an option"
         switch ($choice) {
-            "1" { 
-                Start-ToolboxMenu 
+            "1" {
+                Start-ToolboxMenu
                 Write-Log "Choice 1 selected: Toolbox Menu"
             }
-            "2" { 
-                Start-ZipMenu 
+            "2" {
+                Start-ZipMenu
                 Write-Log "Choice 2 selected: Zip Archive Menu"
             }
-            "3" { 
-                Start-HashMenu 
+            "3" {
+                Start-HashMenu
                 Write-Log "Choice 3 selected: HashCheck Menu"
             }
-            "0" { 
-                Clear-Host 
-                Write-Log "════════════════════════════════════════════ Exiting 1337phtm's Windows Toolkit ════════════════════════════════════════════"; 
+            "0" {
+                Clear-Host
+                Write-Log "════════════════════════════════════════════ Exiting 1337phtm's Windows Toolkit ════════════════════════════════════════════";
                 return
             }
             default {
@@ -64,7 +64,7 @@ function Start-MainMenu {
 }
 
 #======================================================================
-# Démarrage dU programme
+# Démarrage du programme
 #======================================================================
 Write-Log "════════════════════════════════════════════ 1337phtm's Windows Toolkit started ════════════════════════════════════════════"
 Start-MainMenu
