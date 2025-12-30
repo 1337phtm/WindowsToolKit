@@ -1,4 +1,5 @@
-﻿# ============================
+﻿
+# ============================
 #   WindowsToolkit - Setup
 #   Auteur : 1337phtm
 # ============================
@@ -18,17 +19,18 @@ $Global:DebugMode = $DebugMode.IsPresent
 
 if ($Global:DebugMode) {
     $Global:VerbosePreference = "Continue"
-    $Global:DebugPreference   = "Continue"
-} else {
+    $Global:DebugPreference = "Continue"
+}
+else {
     $Global:VerbosePreference = "SilentlyContinue"
-    $Global:DebugPreference   = "SilentlyContinue"
+    $Global:DebugPreference = "SilentlyContinue"
 }
 
 $Global:ErrorActionPreference = "Stop"
 
 # --- Dossiers ---
 $Global:WTKRoot = Join-Path $env:LOCALAPPDATA "WindowsToolkit"
-$Global:LogDir  = Join-Path $Global:WTKRoot "Logs"
+$Global:LogDir = Join-Path $Global:WTKRoot "Logs"
 
 foreach ($dir in @($Global:WTKRoot, $Global:LogDir)) {
     if (-not (Test-Path $dir)) {
@@ -37,8 +39,8 @@ foreach ($dir in @($Global:WTKRoot, $Global:LogDir)) {
 }
 
 # --- Fichiers de log ---
-$Global:LogFile       = Join-Path $Global:LogDir "WindowsToolkit.log"
-$Global:ErrorLogFile  = Join-Path $Global:LogDir "WindowsToolkit.error.log"
+$Global:LogFile = Join-Path $Global:LogDir "WindowsToolkit.log"
+$Global:ErrorLogFile = Join-Path $Global:LogDir "WindowsToolkit.error.log"
 
 foreach ($file in @($Global:LogFile, $Global:ErrorLogFile)) {
     if (-not (Test-Path $file)) {
@@ -72,7 +74,8 @@ function Get-Logs {
         if (Test-Path $old) {
             if ($i -eq 3) {
                 Remove-Item $old -Force
-            } else {
+            }
+            else {
                 Rename-Item $old $new -Force
             }
         }
@@ -124,10 +127,10 @@ function Write-ErrorLog {
     Add-Content -Path $Global:ErrorLogFile -Value $line
 
     # Message propre pour l'utilisateur (si pas Silent)
-    if(-not $Silent) {
+    if (-not $Silent) {
         Write-Host "❌ Une erreur est survenue dans $Source. Consultez error.log pour plus de détails." -ForegroundColor Red
     }
-}   
+}
 
 
 
