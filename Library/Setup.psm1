@@ -95,7 +95,21 @@ function Start-Log {
         "0" | Out-File $RunCountFile -Encoding UTF8
     }
 
-    $RunCount = [int](Get-Content $RunCountFile)
+    #Essaye de décoder le contenu du fichier sinon réinitialise à 0
+    try {
+        $RunCount = Get-Content $RunCountFile |
+        Where-Object { $_.Trim() -ne "" } |
+        Select-Object -First 1
+
+        $RunCount = [int]$RunCount
+    }
+    catch {
+        # Si le fichier est corrompu → on repart à zéro
+        $RunCount = 0
+        "0" | Out-File $RunCountFile -Encoding UTF8
+        Write-ErrorLog -Source "Setup | Start-Log" -Message "run.count corrupted, reset to 0." -Silent
+    }
+
     $RunCount++
     $RunCount | Out-File $RunCountFile -Encoding UTF8
 
