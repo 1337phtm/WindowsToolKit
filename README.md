@@ -7,14 +7,14 @@
 
 ## Description
 
-Ce dépôt contient un utilitaire Windows (WindowsToolKit : WTK) sous Powershell. Il regroupe plusieurs modules permettant d’automatiser, diagnostiquer et maintenir un système Windows de manière simple et efficace. 
+Ce dépôt contient un utilitaire Windows (WindowsToolKit : WTK) sous Powershell. Il regroupe plusieurs modules permettant d’automatiser, diagnostiquer et maintenir un système Windows de manière simple et efficace.
 
-## 📋 Prérequis 
-- Windows 10 / 11 
-- PowerShell **5.1** ou **7+** 
-- Les Autorisation pour exécuter des scripts : 
+## 📋 Prérequis
+- Windows 10 / 11
+- PowerShell **5.1** ou **7+**
+- Les Autorisation pour exécuter des scripts :
 
-```powershell 
+```powershell
    Get-ExecutionPolicy
    Set-ExecutionPolicy RemoteSigned CurrentUser
 ```
@@ -32,7 +32,7 @@ Ce dépôt contient un utilitaire Windows (WindowsToolKit : WTK) sous Powershell
    cd WindowsToolKit
    ```
    1.1 Mettre à jour le dépôt :
-   
+
    ````powershell
    git pull origin main
    ````
@@ -48,29 +48,66 @@ Ce dépôt contient un utilitaire Windows (WindowsToolKit : WTK) sous Powershell
    ```powershell
    .\Main.ps1 -DebugMode
    ```
-   
 
-## 🧰 Fonctionnalités 
 
-### 🔧 Toolbox Windows 
-- Informations système détaillées 
-- Réparation Windows (DISM /RestoreHealth, SFC /scannow) 
-- Outils réseau (IP, Ping, SpeedTest) 
-- Outils DiskPart (extensions futures) 
+## 🧰 Fonctionnalités
 
-### 📦 ZipArchive 
-- Création d’archives ZIP 
-- Export de dossiers (ex : CurseForge) 
+### 🔧 Toolbox Windows
+- Informations système détaillées
+- Réparation Windows (DISM /RestoreHealth, SFC /scannow)
+- Outils réseau (IP, Ping, SpeedTest)
+- Outils DiskPart (extensions futures)
 
-### 🔐 HashCheck 
-- Calcul de hash 
-- Comparaison de fichiers 
-- Vérification d’intégrité 
+### 📦 ZipArchive
+- Création d’archives ZIP
+- Export de dossiers (ex : CurseForge)
 
-### ⚙️ Setup 
-- Fonctions utilitaires communes 
-- Gestion des logs 
+### 🔐 HashCheck
+- Calcul de hash
+- Comparaison de fichiers
+- Vérification d’intégrité
+
+### ⚙️ Setup
+- Fonctions utilitaires communes
+- Gestion des logs
 - Gestion des erreurs
-- Fonctions d’affichage (Stop‑Screen, etc.) 
+- Fonctions d’affichage (Stop‑Screen, etc.)
 
+
+## 🧰 Architecture du projet
+
+```text
+WindowsToolKit/
+│
+├── .git/
+│   └── workflows/           # Actions CI/CD (tests, build, publish)
+│
+├── docs/                    # Documentation détaillée
+│   └── *.md
+│
+├── src/                     # Code principal
+│   ├── WindowsToolKit.psm1  # Module principal
+│   ├── WindowsToolKit.psd1  # Manifest du module
+│   ├── Public/              # Fonctions exportées
+│   │   └── *.ps1
+│   └── Private/             # Fonctions internes
+│       └── *.ps1
+│
+├── lib/                     # Archive
+│   └── *.psm1
+│
+├── tests/                   # Tests avec Pester
+│   └── *.Tests.ps1
+│
+├── examples/                # Scripts d’exemples d’utilisation
+│   └── example1.ps1
+│
+├── tools/                   # Scripts d’installation, build, packaging
+│   └── build.ps1
+│
+├── Maain.ps1
+├── README.md
+├── CONTRIBUTING.md          # Guidelines contribution
+├── LICENSE
+└── CHANGELOG.md
 

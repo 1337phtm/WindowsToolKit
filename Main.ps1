@@ -4,11 +4,11 @@
 #======================================================================
 # Importation des modules
 #======================================================================
-Import-Module "$PSScriptRoot\lib\Setup.psm1" -Force -DisableNameChecking
+Import-Module "$PSScriptRoot\src\Setup.psm1" -Force -DisableNameChecking
 Start-Log
-Import-Module "$PSScriptRoot\lib\Toolbox.psm1" -Force -DisableNameChecking
-Import-Module "$PSScriptRoot\lib\ZipArchive.psm1" -Force -DisableNameChecking
-Import-Module "$PSScriptRoot\lib\HashCheck.psm1" -Force -DisableNameChecking
+Import-Module "$PSScriptRoot\src\Toolbox.psm1" -Force -DisableNameChecking
+Import-Module "$PSScriptRoot\src\ZipArchive.psm1" -Force -DisableNameChecking
+Import-Module "$PSScriptRoot\src\HashCheck.psm1" -Force -DisableNameChecking
 
 #======================================================================
 # Affichage du menu principal
