@@ -14,6 +14,16 @@ Import-Module "$PSScriptRoot\src\GitInstall\main.psm1" -Force -DisableNameChecki
 #======================================================================
 # Affichage du menu principal
 #======================================================================
+
+$cyan = "`e[38;2;0;200;255m"
+$purple = "`e[38;2;180;0;255m"
+$reset = "`e[0m"
+
+Write-Host "$cyan╔═══════════════════════════════╗$reset"
+Write-Host "$purple║        Git Installer         ║$reset"
+Write-Host "$cyan╚═══════════════════════════════╝$reset"
+
+
 function Show-MainMenu {
     Write-Log "Starting Main Menu"
     Clear-Host
@@ -73,4 +83,4 @@ function Start-MainMenu {
 # Démarrage du programme
 #======================================================================
 Write-Log "════════════════════════════════════════════ 1337phtm's Windows Toolkit started ════════════════════════════════════════════"
-Start-MainMenu
+#Start-MainMenu
