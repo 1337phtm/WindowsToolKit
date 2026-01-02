@@ -1,6 +1,7 @@
 ﻿cd ..
 git add .
-$message = Read-Host "Enter your commit message "
+$timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
+$message = "[$timestamp] push by $($env:USERNAME)"
 git commit -m $message
 git push origin main
 
