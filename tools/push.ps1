@@ -1,4 +1,4 @@
-﻿cd ..
+﻿Set-Location ..
 git add .
 $timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
 $message = "[$timestamp] push by $($env:USERNAME)"

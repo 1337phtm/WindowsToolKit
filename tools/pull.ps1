@@ -1,2 +1,2 @@
-﻿cd ..
+﻿Set-Location ..
 git pull origin main
