@@ -24,6 +24,8 @@ function Show-MainMenu {
     Write-Host "[1]  Toolbox Menu" -ForegroundColor DarkCyan
     Write-Host "[2]  Zip Archive Menu" -ForegroundColor DarkYellow
     Write-Host "[3]  HashCheck Menu" -ForegroundColor Magenta
+    #Write-Host "[1]  Windows toolbox" -ForegroundColor Magenta
+    #Write-Host "[4]  Install Git" -ForegroundColor Magenta
     Write-Host ""
     Write-Host "[0]  Exit" -ForegroundColor DarkGray
     Write-Host ""
