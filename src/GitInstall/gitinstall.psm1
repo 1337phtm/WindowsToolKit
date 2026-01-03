@@ -3,9 +3,9 @@
 #======================================================================
 # Importation des modules
 #======================================================================
-Import-Module "$PSScriptRoot\searchgit.psm1" -Force -DisableNameChecking
-Import-Module "$PSScriptRoot\clonerepo.psm1" -Force -DisableNameChecking
-Import-Module "$PSScriptRoot\removerepo.psm1" -Force -DisableNameChecking
+Import-Module "$PSScriptRoot\module\searchgit.psm1" -Force -DisableNameChecking
+Import-Module "$PSScriptRoot\module\clonerepo.psm1" -Force -DisableNameChecking
+Import-Module "$PSScriptRoot\module\removerepo.psm1" -Force -DisableNameChecking
 
 #======================================================================
 # Affichage du menu principal
@@ -13,15 +13,14 @@ Import-Module "$PSScriptRoot\removerepo.psm1" -Force -DisableNameChecking
 function Show-Main {
     Clear-Host
     Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Green
-    Write-Host "║            GITHUB TOOLKIT            ║" -ForegroundColor Green
-    Write-Host "║          WRITTEN BY 1337phtm         ║" -ForegroundColor Green
+    Write-Host "║               GIT TOOLKIT            ║" -ForegroundColor Green
     Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Green
     Write-Host ""
     Write-Host "[1]  Install git" -ForegroundColor DarkCyan
     Write-Host "[2]  Clone repo from user" -ForegroundColor DarkYellow
     Write-Host "[3]  Remove repo" -ForegroundColor Magenta
     Write-Host ""
-    Write-Host "[0]  Exit" -ForegroundColor DarkGray
+    Write-Host "[0]  Back to main menu" -ForegroundColor DarkGray
     Write-Host ""
 }
 
@@ -34,7 +33,7 @@ function Start-Git {
         Show-Main
         $choice = Read-Host "Choose an option"
         switch ($choice) {
-            "1" { tInstall-Git }
+            "1" { Install-Git }
             "2" { Search-InstallGit; Clone-Repo }
             "3" { Search-InstallGit; Remove-Repo }
             "0" {

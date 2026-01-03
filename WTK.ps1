@@ -9,7 +9,8 @@ Start-Log
 Import-Module "$PSScriptRoot\src\Toolbox\Toolbox.psm1" -Force -DisableNameChecking
 Import-Module "$PSScriptRoot\src\ZipArchive\ZipArchive.psm1" -Force -DisableNameChecking
 Import-Module "$PSScriptRoot\src\HashCheck\HashCheck.psm1" -Force -DisableNameChecking
-Import-Module "$PSScriptRoot\src\GitInstall\main.psm1" -Force -DisableNameChecking
+Import-Module "$PSScriptRoot\src\GitInstall\gitinstall.psm1" -Force -DisableNameChecking
+Import-Module "$PSScriptRoot\src\Winget\winget.psm1" -Force -DisableNameChecking
 
 #======================================================================
 # Affichage du menu principal
@@ -43,21 +44,23 @@ function Start-MainMenu {
         switch ($choice) {
             "1" {
                 Start-ToolboxMenu
-                Write-Log "Choice 1 selected: Toolbox Menu"
+                Write-Log "Choice 1 selected : Toolbox Menu"
             }
             "2" {
                 Start-ZipMenu
-                Write-Log "Choice 2 selected: Zip Archive Menu"
+                Write-Log "Choice 2 selected : Zip Archive Menu"
             }
             "3" {
                 Start-HashMenu
-                Write-Log "Choice 3 selected: HashCheck Menu"
+                Write-Log "Choice 3 selected : HashCheck Menu"
             }
             "4" {
                 Start-Git
+                Write-Log "Choice 3 selected : Git Menu"
             }
             "5" {
-
+                Start-WingetMenu
+                Write-Log "Choice 3 selected : WinGet Menuu"
             }
             "0" {
                 Clear-Host

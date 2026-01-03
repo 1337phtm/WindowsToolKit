@@ -27,6 +27,8 @@
         $drives = Get-PSDrive -PSProvider FileSystem
         $allRepos = @()
 
+        Write-Host "This action can take few minutes"
+        Write-Host ""
         Write-Host "Searching for folder git ..." -ForegroundColor Yellow
         foreach ($drive in $drives) {
             # Vérifie si le disque doit être exclu

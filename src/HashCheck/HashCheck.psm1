@@ -10,15 +10,15 @@ function Start-HashMenu {
         Show-HashMainMenu
         $choice = Read-Host "Choose an option"
         switch ($choice) {
-            "1" { 
-                HashCheckCopy 
+            "1" {
+                HashCheckCopy
                 Write-Log "Choice 1 selected : Hash Check Copy"
             }
-            "2" { 
-                HashCheckVerify 
+            "2" {
+                HashCheckVerify
                 Write-Log "Choice 2 selected : Hash Check Verify"
             }
-            "3" { 
+            "3" {
                 HashCheckRemove
                 Write-Log "Choice 3 selected : Hash Check Remove"
             }
@@ -40,7 +40,7 @@ function Show-HashMainMenu {
     Write-Log "Displaying Hash Check menu"
     Clear-Host
     Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Magenta
-    Write-Host "║              Hash Check              ║" -ForegroundColor Magenta
+    Write-Host "║             HASHCHECK MENU           ║" -ForegroundColor Magenta
     Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Magenta
     Write-Host ""
     Write-Host "[1]  Hash Check Copy"
@@ -65,15 +65,15 @@ function Show-HashCheck {
 #Fonction select dossier via fenêtre
 function Select-Folder($message) {
 
-        $FolderBrowser = New-Object -ComObject Shell.Application
-        $Folder = $FolderBrowser.BrowseForFolder(0, $message, 0, 0)
-        if ($Folder) {
-            return $Folder.Items().Item().Path
-        } 
-        else {
-            Write-ErrorLog -Source "HASH CHECK | SELECTFOLDER" -Message "User canceled folder selection" -Silent
-            return "CANCELED"
-        }
+    $FolderBrowser = New-Object -ComObject Shell.Application
+    $Folder = $FolderBrowser.BrowseForFolder(0, $message, 0, 0)
+    if ($Folder) {
+        return $Folder.Items().Item().Path
+    }
+    else {
+        Write-ErrorLog -Source "HASH CHECK | SELECTFOLDER" -Message "User canceled folder selection" -Silent
+        return "CANCELED"
+    }
 }
 
 
@@ -100,120 +100,120 @@ function Copy-Unique($files, $destination) {
 
 function HashCheckCopy {
 
-Clear-Host
-Show-HashCheck
+    Clear-Host
+    Show-HashCheck
 
-# Demander combien de dossiers comparer
-[int]$nbFolders = Read-Host "How many repertory do you want to compare ? "
+    # Demander combien de dossiers comparer
+    [int]$nbFolders = Read-Host "How many repertory do you want to compare ? "
 
-if ($nbFolders -lt 2) {
-    Write-Host ""
-    Write-Host "You need at least 2 cases to compare." -ForegroundColor Red
-    Write-Host ""
-    Write-ErrorLog -Source "HASH CHECK | SELECTFOLDER" -Message "User choose less than 2 cases to compare." -Silent
-    Pause
-    return
-}
-
-# Sélectionner les dossiers sources
-$folders = @()
-for ($i=1; $i -le $nbFolders; $i++) {
-    $folder = Select-Folder "Choose the folder number $i : "
-    if ($folder -eq "CANCELED") {
-        return  # ← quitte la fonction appelante immédiatement
+    if ($nbFolders -lt 2) {
+        Write-Host ""
+        Write-Host "You need at least 2 cases to compare." -ForegroundColor Red
+        Write-Host ""
+        Write-ErrorLog -Source "HASH CHECK | SELECTFOLDER" -Message "User choose less than 2 cases to compare." -Silent
+        Pause
+        return
     }
-    $folders += $folder
-}
 
-# Sélectionner le dossier final
-$finalFolder = Select-Folder "Choose the final folder : "
+    # Sélectionner les dossiers sources
+    $folders = @()
+    for ($i = 1; $i -le $nbFolders; $i++) {
+        $folder = Select-Folder "Choose the folder number $i : "
+        if ($folder -eq "CANCELED") {
+            return  # ← quitte la fonction appelante immédiatement
+        }
+        $folders += $folder
+    }
+
+    # Sélectionner le dossier final
+    $finalFolder = Select-Folder "Choose the final folder : "
     if ($finalFolder -eq "CANCELED") {
         return  # ← quitte la fonction appelante immédiatement
     }
 
-# Récupérer les fichiers et leurs hash pour chaque dossier
-$allHashes = @()
-foreach ($folder in $folders) {
-    $hashes = Get-ChildItem $folder -File -Recurse | ForEach-Object {
-        [PSCustomObject]@{
-            Path = $_.FullName
-            Name = $_.Name
-            Hash = (Get-FileHash $_.FullName -Algorithm SHA256).Hash
+    # Récupérer les fichiers et leurs hash pour chaque dossier
+    $allHashes = @()
+    foreach ($folder in $folders) {
+        $hashes = Get-ChildItem $folder -File -Recurse | ForEach-Object {
+            [PSCustomObject]@{
+                Path = $_.FullName
+                Name = $_.Name
+                Hash = (Get-FileHash $_.FullName -Algorithm SHA256).Hash
+            }
         }
+        $allHashes += $hashes
     }
-    $allHashes += $hashes
-}
 
-# Trouver les fichiers uniques (hash apparaissant une seule fois)
-$uniqueFiles = $allHashes | Group-Object Hash | Where-Object { $_.Count -eq 1 } | ForEach-Object { $_.Group }
+    # Trouver les fichiers uniques (hash apparaissant une seule fois)
+    $uniqueFiles = $allHashes | Group-Object Hash | Where-Object { $_.Count -eq 1 } | ForEach-Object { $_.Group }
 
 
-# Copier les fichiers uniques
-Copy-Unique $uniqueFiles $finalFolder
+    # Copier les fichiers uniques
+    Copy-Unique $uniqueFiles $finalFolder
 
-Write-Host ""
-Write-Output "All unique files have been copied into $finalFolder."
-Write-Host ""
+    Write-Host ""
+    Write-Output "All unique files have been copied into $finalFolder."
+    Write-Host ""
 
-Invoke-Item $finalFolder
+    Invoke-Item $finalFolder
 }
 
 #======================================================================
 # HashCheck Verify
 #======================================================================
 
-function HashCheckVerify { 
+function HashCheckVerify {
 
-Clear-Host
-Show-HashCheck
+    Clear-Host
+    Show-HashCheck
 
-# Demander combien de dossiers comparer
-[int]$nbFolders = Read-Host "How many repertory do you want to compare ? "
+    # Demander combien de dossiers comparer
+    [int]$nbFolders = Read-Host "How many repertory do you want to compare ? "
 
-if ($nbFolders -lt 2) {
-    Write-Host ""
-    Write-Host "You need at least 2 cases to compare." -ForegroundColor Red
-    Write-Host ""
-    Write-ErrorLog -Source "HASH CHECK | SELECTFOLDER" -Message "User choose less than 2 cases to compare." -Silent
-    Pause
-    return
-}
-
-# Sélectionner les dossiers sources
-$folders = @()
-for ($i=1; $i -le $nbFolders; $i++) {
-    $folder = Select-Folder "Choose the folder number $i : "
-    if ($folder -eq "CANCELED") {
-        return  # ← quitte la fonction appelante immédiatement
+    if ($nbFolders -lt 2) {
+        Write-Host ""
+        Write-Host "You need at least 2 cases to compare." -ForegroundColor Red
+        Write-Host ""
+        Write-ErrorLog -Source "HASH CHECK | SELECTFOLDER" -Message "User choose less than 2 cases to compare." -Silent
+        Pause
+        return
     }
-    $folders += $folder
-}
 
-# Récupérer les fichiers et leurs hash pour chaque dossier
-$allHashes = @()
-foreach ($folder in $folders) {
-    $hashes = Get-ChildItem $folder -File -Recurse | ForEach-Object {
-        [PSCustomObject]@{
-            Path          = $_.FullName
-            Name          = $_.Name
-            Hash = (Get-FileHash $_.FullName -Algorithm SHA256).Hash
-            Size          = $_.Length 
-            LastWriteTime = $_.LastWriteTime
-            #ShortPath     = $_.DirectoryName.Split('\')[-1] + "\" + $_.Name
+    # Sélectionner les dossiers sources
+    $folders = @()
+    for ($i = 1; $i -le $nbFolders; $i++) {
+        $folder = Select-Folder "Choose the folder number $i : "
+        if ($folder -eq "CANCELED") {
+            return  # ← quitte la fonction appelante immédiatement
         }
+        $folders += $folder
     }
-    $allHashes += $hashes
-}
 
-# Trouver les fichiers uniques (hash apparaissant une seule fois)
-$uniqueFiles = $allHashes | Group-Object Hash | Where-Object { $_.Count -eq 1 } | ForEach-Object { $_.Group }
+    # Récupérer les fichiers et leurs hash pour chaque dossier
+    $allHashes = @()
+    foreach ($folder in $folders) {
+        $hashes = Get-ChildItem $folder -File -Recurse | ForEach-Object {
+            [PSCustomObject]@{
+                Path          = $_.FullName
+                Name          = $_.Name
+                Hash          = (Get-FileHash $_.FullName -Algorithm SHA256).Hash
+                Size          = $_.Length
+                LastWriteTime = $_.LastWriteTime
+                #ShortPath     = $_.DirectoryName.Split('\')[-1] + "\" + $_.Name
+            }
+        }
+        $allHashes += $hashes
+    }
 
-Write-Host ""
-#Write-Output $uniqueFiles | Format-Table Name, Size, LastWriteTime, Path -AutoSize #ShortPath 
-Write-Output $uniqueFiles | Format-Table ` @{Label="LastWrite"; Expression={ $_.LastWriteTime }; Width=22 }, ` @{Label="Name"; Expression={ $_.Name }; Width=25 }, ` @{Label="Size"; Expression={ $_.Size }; Width=10 },  ` @{Label="Path"; Expression={ $_.Path }; Width=80 }
-Write-Host ""
+    # Trouver les fichiers uniques (hash apparaissant une seule fois)
+    $uniqueFiles = $allHashes | Group-Object Hash | Where-Object { $_.Count -eq 1 } | ForEach-Object { $_.Group }
 
-Stop-Screen
+    Write-Host ""
+    #Write-Output $uniqueFiles | Format-Table Name, Size, LastWriteTime, Path -AutoSize #ShortPath
+    Write-Output $uniqueFiles | Format-Table ` @{Label = "LastWrite"; Expression = { $_.LastWriteTime }; Width = 22 }, @{Label = "Name"; Expression = { $_.Name }; Width = 25 }, @{Label = "Size"; Expression = { $_.Size }; Width = 10 }, @{Label = "Path"; Expression = { $_.Path }; Width = 80 }
+    Write-Host ""
+
+    Stop-Screen
 
 }
 
@@ -221,7 +221,7 @@ Stop-Screen
 # HashCheck Remove
 #======================================================================
 
-function HashCheckRemove { 
+function HashCheckRemove {
 }
 
 #======================================================================
