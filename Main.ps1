@@ -27,6 +27,7 @@ function Show-MainMenu {
     Write-Host "[3]  HashCheck Menu" -ForegroundColor Magenta
     #Write-Host "[1]  Windows toolbox" -ForegroundColor Magenta
     Write-Host "[4]  Git Menu" -ForegroundColor Blue
+    Write-Host "[5]  Winget Menu" -ForegroundColor Blue
     Write-Host ""
     Write-Host "[0]  Exit" -ForegroundColor DarkGray
     Write-Host ""
@@ -54,6 +55,9 @@ function Start-MainMenu {
             }
             "4" {
                 Start-Git
+            }
+            "5" {
+
             }
             "0" {
                 Clear-Host
