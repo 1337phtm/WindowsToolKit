@@ -63,13 +63,14 @@
         for ($i = 0; $i -lt $allRepos.Count; $i++) {
             Write-Host "[$($i+1)] $($allRepos[$i])" -ForegroundColor Yellow
             Write-Host ""
-        }
 
-        #Suppression des dossier
+            #Suppression des dossier
+            $repo = $allRepos[$i]
+            $num = $i + 1  # numéro humain (1,2,3...)
 
-        foreach ($repo in $allRepos) {
-            $choice = Read-Host "Do you want to delete $repo ? (Y/N) "
+            $choice = Read-Host "[$num/$($allRepos.Count)] Do you want to delete $repo ? (Y/N)"
             Write-Host ""
+
             if ($choice -in @("Y", "y")) {
                 Remove-Item -Path $repo -Recurse -Force
                 Write-Host "✔  Deletion of $repo successful." -ForegroundColor Green
