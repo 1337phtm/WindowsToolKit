@@ -1,6 +1,6 @@
 ﻿function Clone-Repo {
     Clear-Host
-    Search-InstallGit
+    #Search-InstallGit
 
     #======================================================================
     # Clone GitHub Repositories

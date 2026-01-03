@@ -34,9 +34,9 @@ function Start-Git {
         Show-Main
         $choice = Read-Host "Choose an option"
         switch ($choice) {
-            "1" { Install-Git }
-            "2" { Clone-Repo }
-            "3" { Remove-Repo }
+            "1" { tInstall-Git }
+            "2" { Search-InstallGit; Clone-Repo }
+            "3" { Search-InstallGit; Remove-Repo }
             "0" {
                 Clear-Host
                 return

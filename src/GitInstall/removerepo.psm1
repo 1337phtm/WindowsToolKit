@@ -1,6 +1,6 @@
 ﻿function Remove-Repo {
     Clear-Host
-    Search-InstallGit
+    #Search-InstallGit
 
     #======================================================================
     # Remove

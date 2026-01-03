@@ -1,5 +1,4 @@
-﻿
-function Install-Git {
+﻿function Install-Git {
     #Code pour main
     Clear-Host
 
@@ -86,7 +85,6 @@ function Install-Git {
 
 function Search-InstallGit {
     #fonction générique pour cherche git silencieusement
-
     #======================================================================
     # Git Installation Check
     #======================================================================
