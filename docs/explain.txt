@@ -1,31 +1,3 @@
-﻿Bien sûr 🙂
-Je vais tout reprendre calmement, dossier par dossier, avec des mots simples, le rôle, qui l’utilise, et des exemples concrets pour TON WindowsToolKit.
-
-L’idée : à la fin, tu dois pouvoir dire “ok, celui-là je le garde / celui-là je n’en ai pas besoin”.
-
-🗂️ Tous les dossiers expliqués clairement
-📁 .github/
-👉 À quoi ça sert
-
-Contient tout ce qui est lié à GitHub, surtout l’automatisation.
-
-Qui l’utilise
-
-GitHub
-
-Toi, indirectement
-
-Contenu typique
-.github/
-└── workflows/
-    └── tests.yml
-
-Exemple concret
-
-lancer des tests automatiquement à chaque git push
-
-vérifier que ton code ne casse rien
-
 👉 Optionnel au début, utile plus tard.
 
 📁 docs/
