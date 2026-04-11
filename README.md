@@ -79,35 +79,15 @@ Ce dépôt contient un utilitaire Windows (WindowsToolKit : WTK) sous Powershell
 ```text
 WindowsToolKit/
 │
-├── .git/
-│   └── workflows/           # Actions CI/CD (tests, build, publish)
-│
-├── docs/                    # Documentation détaillée
-│   └── *.md
+
 │
 ├── src/                     # Code principal
-│   ├── WindowsToolKit.psm1  # Module principal
-│   ├── WindowsToolKit.psd1  # Manifest du module
-│   ├── Public/              # Fonctions exportées
-│   │   └── *.ps1
-│   └── Private/             # Fonctions internes
-│       └── *.ps1
+│   ├──
+│   └──
 │
-├── lib/                     # Archive
-│   └── *.psm1
-│
-├── tests/                   # Tests avec Pester
-│   └── *.Tests.ps1
-│
-├── examples/                # Scripts d’exemples d’utilisation
-│   └── example1.ps1
-│
-├── tools/                   # Scripts d’installation, build, packaging
-│   └── build.ps1
-│
-├── Maain.ps1
+├── .gitignore
+├── Main.ps1
 ├── README.md
-├── CONTRIBUTING.md          # Guidelines contribution
 ├── LICENSE
-└── CHANGELOG.md
+└── CHANGELOG
 
