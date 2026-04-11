@@ -79,7 +79,6 @@ Ce dépôt contient un utilitaire Windows (WindowsToolKit : WTK) sous Powershell
 ```text
 WindowsToolKit/
 │
-
 │
 ├── src/                     # Code principal
 │   ├──
