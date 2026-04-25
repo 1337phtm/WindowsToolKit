@@ -11,23 +11,23 @@
 #======================================================================
 # Fonction debug | use with .\main.ps1 -DebugMode
 #======================================================================
+
 param(
     [switch]$DebugMode
 )
 
-#$Global:DebugMode = $DebugMode.IsPresent
-#
-#if ($Global:DebugMode) {
-#    $Global:VerbosePreference = "Continue"
-#    $Global:DebugPreference = "Continue"
-#}
-#else {
-#    $Global:VerbosePreference = "SilentlyContinue"
-#    $Global:DebugPreference = "SilentlyContinue"
-#}
-#
-$Global:ErrorActionPreference = "Stop"
+$Global:DebugMode = $DebugMode.IsPresent
 
+if ($Global:DebugMode) {
+    $Global:VerbosePreference = "Continue"
+    $Global:DebugPreference = "Continue"
+}
+else {
+    $Global:VerbosePreference = "SilentlyContinue"
+    $Global:DebugPreference = "SilentlyContinue"
+}
+
+$Global:ErrorActionPreference = "Stop"
 
 #======================================================================
 # --- Logs ---
@@ -43,38 +43,42 @@ foreach ($dir in @($Global:WTKRoot, $Global:LogDir)) {
 }
 
 # --- Fichiers de log ---
-function Start-Setup {
-    param(
-        [string]$LogName
-    )
+$Global:LogFile = Join-Path $Global:LogDir "WTK.log"
+$Global:ErrorLogFile = Join-Path $Global:LogDir "WTK.error.log"
 
-    $info = [System.IO.Path]::GetFileNameWithoutExtension($LogName)
-
-    $Global:LogFile = Join-Path $Global:LogDir "$($info).log"
-    $Global:ErrorLogFile = Join-Path $Global:LogDir "$($info).error.log"
-
-    foreach ($file in @($Global:LogFile, $Global:ErrorLogFile)) {
-        if (-not (Test-Path $file)) {
-            New-Item -ItemType File -Path $file | Out-Null
-        }
+foreach ($file in @($Global:LogFile, $Global:ErrorLogFile)) {
+    if (-not (Test-Path $file)) {
+        New-Item -ItemType File -Path $file | Out-Null
     }
 }
 
-# --- Ecriture de log ---
-function Write-Log {
-    param(
-        [string]$Message,
-        [string]$Level = "INFO"
-    )
+# --- Start log ---
 
-    $timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
-    $line = "[$timestamp] [$Level] $Message"
-
-    Add-Content -Path $Global:LogFile -Value $line
+$RunCountFile = Join-Path $Global:LogDir "run.count"
+if (-not (Test-Path $RunCountFile)) {
+    "0" | Out-File $RunCountFile -Encoding UTF8
 }
 
+#Essaye de décoder le contenu du fichier sinon réinitialise à 0
+try {
+    $RunCount = Get-Content $RunCountFile |
+    Where-Object { $_.Trim() -ne "" } |
+    Select-Object -First 1
+
+    $RunCount = [int]$RunCount
+}
+catch {
+    # Si le fichier est corrompu → on repart à zéro
+    $RunCount = 0
+    "0" | Out-File $RunCountFile -Encoding UTF8
+    Write-ErrorLog -Source "Setup | Start-Log" -Message "run.count corrupted, reset to 0." -Silent
+}
+
+$RunCount++
+$RunCount | Out-File $RunCountFile -Encoding UTF8
+
 # --- Rotation avancée de logs (3 fichiers max) ---
-function Get-Logs {
+function RotateLogs {
     param(
         [string]$FilePath
     )
@@ -99,38 +103,28 @@ function Get-Logs {
     }
 }
 
-# --- Compteur d'exécutions ---
-function Start-Log {
-
-    $RunCountFile = Join-Path $Global:LogDir "run.count"
-    if (-not (Test-Path $RunCountFile)) {
-        "0" | Out-File $RunCountFile -Encoding UTF8
-    }
-
-    #Essaye de décoder le contenu du fichier sinon réinitialise à 0
-    try {
-        $RunCount = Get-Content $RunCountFile |
-        Where-Object { $_.Trim() -ne "" } |
-        Select-Object -First 1
-
-        $RunCount = [int]$RunCount
-    }
-    catch {
-        # Si le fichier est corrompu → on repart à zéro
-        $RunCount = 0
-        "0" | Out-File $RunCountFile -Encoding UTF8
-        Write-ErrorLog -Source "Setup | Start-Log" -Message "run.count corrupted, reset to 0." -Silent
-    }
-
-    $RunCount++
-    $RunCount | Out-File $RunCountFile -Encoding UTF8
-
-    if ($RunCount -gt 150) {
-        Get-Logs -FilePath $Global:LogFile
-        Get-Logs -FilePath $Global:ErrorLogFile
-        "0" | Out-File $RunCountFile -Encoding UTF8
-    }
+if ($RunCount -gt 150) {
+    RotateLogs -FilePath $Global:LogFile
+    RotateLogs -FilePath $Global:ErrorLogFile
+    "0" | Out-File $RunCountFile -Encoding UTF8
 }
+
+
+
+# --- Ecriture de log ---
+function Write-Log {
+    param(
+        [string]$Message,
+        [string]$Level = "INFO"
+    )
+
+    $timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
+    $line = "[$timestamp] [$Level] $Message"
+
+    Add-Content -Path $Global:LogFile -Value $line
+}
+
+
 
 #======================================================================
 # Gestion d'erreurs
@@ -158,8 +152,6 @@ function Write-ErrorLog {
     }
 }
 
-
-
 #======================================================================
 # Fonctions d'affichage
 #======================================================================
@@ -168,9 +160,3 @@ function Stop-Screen {
     Write-Host ""
     Read-Host "Press Enter to continue..."
 }
-
-#======================================================================
-# Export
-#======================================================================
-
-Export-ModuleMember -Function Write-Log, Start-Log, Stop-Screen, Write-ErrorLog, Start-Setup

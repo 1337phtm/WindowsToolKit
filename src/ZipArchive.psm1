@@ -2,50 +2,6 @@
 # Gestion des sauvegardes / archives
 
 #======================================================================
-# Main - Menu principal Ziparchive
-#======================================================================
-
-function Start-ZipMenu {
-    while ($true) {
-        Show-ZipMenu
-        $choice = Read-Host "Choose an option"
-        switch ($choice) {
-            "1" { 
-                Get-Archivebackup 
-                Write-log "Choice 1 selected: Archive Backup"  
-            }
-            "2" { 
-                Get-CurseforgeBackup 
-                Write-log "Choice 2 selected: CurseForge Backup"  
-            }
-            "0" { return }
-            default {
-                Write-Host "Invalid choice." -ForegroundColor Red
-                Stop-Screen
-            }
-        }
-    } 
-}
-
-#======================================================================
-# Menus d'affichage
-#======================================================================
-
-function Show-ZipMenu {
-    Write-Log "Displaying Zip Archive menu"
-    Clear-Host
-    Write-Host "╔══════════════════════════════════════╗" -ForegroundColor DarkYellow
-    Write-Host "║            Archive Backup            ║" -ForegroundColor DarkYellow
-    Write-Host "╚══════════════════════════════════════╝" -ForegroundColor DarkYellow
-    Write-Host ""
-    Write-Host "[1]  Archive Zip"
-    Write-Host "[2]  Archive CurseForge"
-    Write-Host ""
-    Write-Host "[0]  Back to main menu" -ForegroundColor DarkGray
-    Write-Host ""
-}
-
-#======================================================================
 # Archive Backup
 #======================================================================
 

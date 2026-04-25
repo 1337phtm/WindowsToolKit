@@ -4,9 +4,10 @@
 #======================================================================
 # Importation des modules
 #======================================================================
-Import-Module "$PSScriptRoot\src\Setup.psm1" -Force -DisableNameChecking
-Start-Setup -LogName $PSCommandPath
-Start-Log
+. $PSScriptRoot\src\Display.ps1
+. $PSScriptRoot\src\Options.ps1
+. $PSScriptRoot\src\Setup.ps1
+
 Import-Module "$PSScriptRoot\src\Toolbox.psm1" -Force -DisableNameChecking
 Import-Module "$PSScriptRoot\src\ZipArchive.psm1" -Force -DisableNameChecking
 Import-Module "$PSScriptRoot\src\HashCheck.psm1" -Force -DisableNameChecking

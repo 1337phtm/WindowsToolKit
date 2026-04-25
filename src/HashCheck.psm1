@@ -1,56 +1,6 @@
 ﻿# HashCheck.psm1
 # Outils de hash (comparaison, copie, etc.)
 
-#======================================================================
-# Main - Menu principal Hashmenu
-#======================================================================
-
-function Start-HashMenu {
-    while ($true) {
-        Show-HashMainMenu
-        $choice = Read-Host "Choose an option"
-        switch ($choice) {
-            "1" {
-                HashCheckCopy
-                Write-Log "Choice 1 selected : Hash Check Copy"
-            }
-            "2" {
-                HashCheckVerify
-                Write-Log "Choice 2 selected : Hash Check Verify"
-            }
-            "3" {
-                HashCheckRemove
-                Write-Log "Choice 3 selected : Hash Check Remove"
-            }
-            "0" { return }
-            default {
-                Write-Host "Invalid choice." -ForegroundColor Red
-                Write-ErrorLog -Source "Hash Check Menu" -Message "Invalid choice : $choice" -Silent
-                Stop-Screen
-            }
-        }
-    }
-}
-
-#======================================================================
-# Menus d'affichage
-#======================================================================
-
-function Show-HashMainMenu {
-    Write-Log "Displaying Hash Check menu"
-    Clear-Host
-    Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Magenta
-    Write-Host "║             HASHCHECK MENU           ║" -ForegroundColor Magenta
-    Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Magenta
-    Write-Host ""
-    Write-Host "[1]  Hash Check Copy"
-    Write-Host "[2]  Hash Check Verify"
-    Write-Host "[3]  Hash Check Remove"
-    Write-Host ""
-    Write-Host "[0]  back to main menu" -ForegroundColor DarkGray
-    Write-Host ""
-}
-
 function Show-HashCheck {
     Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Magenta
     Write-Host "║              Hash Check              ║" -ForegroundColor Magenta
@@ -98,7 +48,7 @@ function Copy-Unique($files, $destination) {
 # HashCheck Copy
 #======================================================================
 
-function HashCheckCopy {
+function Get-HashCheckCopy {
 
     Clear-Host
     Show-HashCheck
@@ -162,7 +112,7 @@ function HashCheckCopy {
 # HashCheck Verify
 #======================================================================
 
-function HashCheckVerify {
+function Get-HashCheckVerify {
 
     Clear-Host
     Show-HashCheck
@@ -221,7 +171,7 @@ function HashCheckVerify {
 # HashCheck Remove
 #======================================================================
 
-function HashCheckRemove {
+function Get-HashCheckRemove {
 }
 
 #======================================================================

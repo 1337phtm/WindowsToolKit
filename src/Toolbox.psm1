@@ -2,58 +2,8 @@
 # Outils système Windows (DISM, SFC, réseau, etc.)
 
 #======================================================================
-# Main - Menu principal Toolbox
-#======================================================================
-
-function Start-ToolboxMenu {
-    while ($true) {
-        Show-ToolboxMenu
-        $choice = Read-Host "Select an option"
-        switch ($choice) {
-            "1" { 
-                Get-SystemInfo 
-                Write-Log "Choice 1 selected: System Informations"
-            }
-            "2" { 
-                Get-FixWin 
-                Write-Log "Choice 2 selected: Repair Menu"
-            }
-            "3" { Get-Diskpart 
-                Write-Log "Choice 3 selected: Diskpart Menu"
-            }
-            "4" { 
-                Get-NetworkTools 
-                Write-Log "Choice 4 selected: Network Menu"
-            }
-            "0" { return }
-            default {
-                Write-Host "Invalid choice." -ForegroundColor Red
-                Write-ErrorLog -Source "ToolBox Menu" -Message "Invalid choice : $choice" -Silent
-                Stop-Screen
-            }
-        }
-    }
-}
-
-#======================================================================
 # Menus d'affichage
 #======================================================================
-
-function Show-ToolboxMenu {
-    Write-Log "Displaying Windows toolbox menu"
-    Clear-Host
-    Write-Host "╔══════════════════════════════════════╗" -ForegroundColor DarkCyan
-    Write-Host "║             TOOLBOX MENU             ║" -ForegroundColor DarkCyan
-    Write-Host "╚══════════════════════════════════════╝" -ForegroundColor DarkCyan
-    Write-Host ""
-    Write-Host "[1]  System Informations"
-    Write-Host "[2]  Repair Menu" -ForegroundColor DarkCyan
-    Write-Host "[3]  Diskpart Menu" -ForegroundColor Blue
-    Write-Host "[4]  Network Menu" -ForegroundColor DarkBlue
-    Write-Host ""
-    Write-Host "[0]  Back to main menu" -ForegroundColor DarkGray
-    Write-Host ""
-}
 
 function Show-WindowsRepair {
     Write-Log "Displaying Windows repair menu"
