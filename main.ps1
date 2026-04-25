@@ -5,11 +5,11 @@
 # Importation des modules
 #======================================================================
 Import-Module "$PSScriptRoot\src\Setup.psm1" -Force -DisableNameChecking
-Start-Setup -CallerPath $PSCommandPath
+Start-Setup -LogName $PSCommandPath
 Start-Log
-Import-Module "$PSScriptRoot\src\Toolbox\Toolbox.psm1" -Force -DisableNameChecking
-Import-Module "$PSScriptRoot\src\ZipArchive\ZipArchive.psm1" -Force -DisableNameChecking
-Import-Module "$PSScriptRoot\src\HashCheck\HashCheck.psm1" -Force -DisableNameChecking
+Import-Module "$PSScriptRoot\src\Toolbox.psm1" -Force -DisableNameChecking
+Import-Module "$PSScriptRoot\src\ZipArchive.psm1" -Force -DisableNameChecking
+Import-Module "$PSScriptRoot\src\HashCheck.psm1" -Force -DisableNameChecking
 Import-Module "$PSScriptRoot\src\GitInstall\gitinstall.psm1" -Force -DisableNameChecking
 Import-Module "$PSScriptRoot\src\Winget\winget.psm1" -Force -DisableNameChecking
 
@@ -57,11 +57,11 @@ function Start-MainMenu {
             }
             "4" {
                 Start-Git
-                Write-Log "Choice 3 selected : Git Menu"
+                Write-Log "Choice 4 selected : Git Menu"
             }
             "5" {
                 Start-WingetMenu
-                Write-Log "Choice 3 selected : WinGet Menuu"
+                Write-Log "Choice 5 selected : WinGet Menu"
             }
             "0" {
                 Clear-Host

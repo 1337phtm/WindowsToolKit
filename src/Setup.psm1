@@ -15,17 +15,17 @@ param(
     [switch]$DebugMode
 )
 
-$Global:DebugMode = $DebugMode.IsPresent
-
-if ($Global:DebugMode) {
-    $Global:VerbosePreference = "Continue"
-    $Global:DebugPreference = "Continue"
-}
-else {
-    $Global:VerbosePreference = "SilentlyContinue"
-    $Global:DebugPreference = "SilentlyContinue"
-}
-
+#$Global:DebugMode = $DebugMode.IsPresent
+#
+#if ($Global:DebugMode) {
+#    $Global:VerbosePreference = "Continue"
+#    $Global:DebugPreference = "Continue"
+#}
+#else {
+#    $Global:VerbosePreference = "SilentlyContinue"
+#    $Global:DebugPreference = "SilentlyContinue"
+#}
+#
 $Global:ErrorActionPreference = "Stop"
 
 
@@ -45,10 +45,10 @@ foreach ($dir in @($Global:WTKRoot, $Global:LogDir)) {
 # --- Fichiers de log ---
 function Start-Setup {
     param(
-        [string]$CallerPath
+        [string]$LogName
     )
 
-    $info = [System.IO.Path]::GetFileNameWithoutExtension($CallerPath)
+    $info = [System.IO.Path]::GetFileNameWithoutExtension($LogName)
 
     $Global:LogFile = Join-Path $Global:LogDir "$($info).log"
     $Global:ErrorLogFile = Join-Path $Global:LogDir "$($info).error.log"
@@ -61,7 +61,6 @@ function Start-Setup {
 }
 
 # --- Ecriture de log ---
-
 function Write-Log {
     param(
         [string]$Message,
