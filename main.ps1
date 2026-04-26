@@ -70,7 +70,8 @@ function Start-MainMenu {
                 return
             }
             default {
-                Write-Host "Invalid choice." -ForegroundColor Red
+                Write-Host ""
+                Write-Host "Invalid choice. Please try again." -ForegroundColor Red
                 Write-ErrorLog -Source "Main Menu" -Message "Invalid choice : $choice" -Silent
                 Stop-Screen
             }
