@@ -52,7 +52,9 @@ foreach ($file in @($Global:LogFile, $Global:ErrorLogFile)) {
     }
 }
 
-# --- Start log ---
+#======================================================================
+# --- Rotate de Logs ---
+#======================================================================
 
 $RunCountFile = Join-Path $Global:LogDir "run.count"
 if (-not (Test-Path $RunCountFile)) {
@@ -114,47 +116,97 @@ if ($RunCount -gt 150) {
 # --- Ecriture de log ---
 function Write-Log {
     param(
-        [string]$Message,
-        [string]$Level = "INFO"
+        [string]$Message
     )
 
-    $timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
-    $line = "[$timestamp] [$Level] $Message"
-
-    Add-Content -Path $Global:LogFile -Value $line
+    Add-Content -Path $Global:LogFile -Value "$($Message)" -Force
 }
-
-
-
-#======================================================================
-# Gestion d'erreurs
-#======================================================================
 
 function Write-ErrorLog {
     param(
-        [string]$Source,
-        [string]$Message,
-        [switch]$Silent
+        [string]$Message
     )
 
-    $timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
-    $line = "[$timestamp] [ERROR] [$Source] $Message"
-
-    # Log normal
-    Add-Content -Path $Global:LogFile -Value $line
-
-    # Log des erreurs
-    Add-Content -Path $Global:ErrorLogFile -Value $line
-
-    # Message propre pour l'utilisateur (si pas Silent)
-    if (-not $Silent) {
-        Write-Host "❌ Une erreur est survenue dans $Source. Consultez error.log pour plus de détails." -ForegroundColor Red
-    }
+    Add-Content -Path $Global:ErrorLogFile -Value "$($Message)" -Force
 }
 
 #======================================================================
-# Fonctions d'affichage
+# --- Start ---
 #======================================================================
+
+Write-Log -Message ""
+Write-Log -Message ""
+Write-Log -Message "Démarrage du script : $($LogName) - $(Get-Date -Format "yyyy-MM-dd HH:mm:ss")"
+Write-Log -Message ""
+Write-Log -Message ""
+
+
+Write-ErrorLog -Message ""
+Write-ErrorLog -Message ""
+Write-ErrorLog -Message "Démarrage du script : $($LogName) - $(Get-Date -Format "yyyy-MM-dd HH:mm:ss")"
+Write-ErrorLog -Message ""
+Write-ErrorLog -Message ""
+
+
+#======================================================================
+# --- Affichage ---
+#======================================================================
+
+$Global:StatusCounters = @{
+    SUCCESS = 0
+    ERROR   = 0
+    SKIP    = 0
+    INFO    = 0
+}
+
+function Show-SectionHeader {
+    param([string]$Title)
+    Write-Host ""
+    Write-Host "╔══════════════════════════════════════════╗" -ForegroundColor Blue
+    Write-Host "║ $Title" -ForegroundColor Blue
+    Write-Host "╚══════════════════════════════════════════╝" -ForegroundColor Blue
+    Write-Host ""
+    Write-Log -Message ""
+    Write-Log -Message "╔══════════════════════════════════════════╗"
+    Write-Log -Message "║ $Title"
+    Write-Log -Message "╚══════════════════════════════════════════╝"
+    Write-Log -Message ""
+
+}
+
+function Write-Status {
+    param(
+        [ValidateSet("SUCCESS", "ERROR", "SKIP", "INFO"<#, "TEST"#>)]$Type,
+        [string]$Message
+    )
+
+    $timestamp = Get-Date -Format "HH:mm:ss"
+    $Global:StatusCounters[$Type]++
+
+    switch ($Type) {
+        "SUCCESS" { Write-Host " [$timestamp] ✓  $Message" -ForegroundColor Green }
+        "ERROR" { Write-Host " [$timestamp] ✗ $Message" -ForegroundColor Red }
+        "SKIP" { Write-Host " [$timestamp] - $Message" -ForegroundColor Yellow }
+        "INFO" { Write-Host " [$timestamp] → $Message" -ForegroundColor Cyan }
+        #"TEST" { Write-Host " [$timestamp] ✎ [TEST] $Message" -ForegroundColor Magenta }
+    }
+
+    # LOG AUTOMATIQUE
+    Write-Log -Message "[$timestamp] [$Type] $Message"
+
+    if ($Type -eq "ERROR") {
+        Write-ErrorLog -Message "[$timestamp] [$Type] $Message"
+    }
+}
+
+function Show-Counters {
+    Show-SectionHeader "Execution Summary"
+    Write-Host "  ✓ SUCCESS : $($Global:StatusCounters.SUCCESS)" -ForegroundColor Green
+    Write-Host "  ✗ ERROR   : $($Global:StatusCounters.ERROR)" -ForegroundColor Red
+    Write-Host "  - SKIP    : $($Global:StatusCounters.SKIP)" -ForegroundColor Yellow
+    Write-Host "  → INFO    : $($Global:StatusCounters.INFO)`n" -ForegroundColor Cyan
+    Write-Host "  📝 Logs    : $($Global:LogFile)`n" -ForegroundColor Gray
+}
 
 function Stop-Screen {
     Write-Host ""

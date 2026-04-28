@@ -1,15 +1,8 @@
-﻿function Remove-Repo {
+﻿. $PSScriptRoot\..\Setup.ps1 -LogName $PSCommandPath
+function Remove-Repo {
+
     Clear-Host
-    #Search-InstallGit
-
-    #======================================================================
-    # Remove
-    #======================================================================
-
-    Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Cyan
-    Write-Host "║               Git Remove             ║" -ForegroundColor Cyan
-    Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Cyan
-    Write-Host ""
+    Show-SectionHeader "Git Remove"
 
     function Find-repo {
 
@@ -27,13 +20,11 @@
         $drives = Get-PSDrive -PSProvider FileSystem
         $allRepos = @()
 
-        Write-Host "This action can take few minutes"
-        Write-Host ""
-        Write-Host "Searching for folder git ..." -ForegroundColor Yellow
+        Write-Status INFO "Searching for git repositories (this action may take some time)..."
         foreach ($drive in $drives) {
             # Vérifie si le disque doit être exclu
             if ($exclude -contains $drive.Root.TrimEnd("\")) {
-                Write-Host "Skipping excluded drive $($drive.Root)" -ForegroundColor DarkGray
+                Write-Status SKIP "Skipping excluded drive $($drive.Root)"
                 continue
             }
             try {
@@ -58,13 +49,14 @@
         }
 
         Write-Host ""
-        Write-Host "Found $($allRepos.Count) Git repositories :" -ForegroundColor Cyan
+        Write-Status INFO "Found $($allRepos.Count) Git repositories :"
         Write-Host ""
+
         for ($i = 0; $i -lt $allRepos.Count; $i++) {
-            Write-Host "[$($i+1)] $($allRepos[$i])" -ForegroundColor Yellow
+            Write-Status INFO "[$($i+1)] $($allRepos[$i])"
             Write-Host ""
 
-            #Suppression des dossier
+            #Suppression des dossiers
             $repo = $allRepos[$i]
             $num = $i + 1  # numéro humain (1,2,3...)
 
@@ -73,7 +65,7 @@
 
             if ($choice -in @("Y", "y")) {
                 Remove-Item -Path $repo -Recurse -Force
-                Write-Host "✔  Deletion of $repo successful." -ForegroundColor Green
+                Write-Status SUCCESS "Deletion of $repo successful."
                 Write-Host ""
             }
         }

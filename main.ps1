@@ -4,21 +4,22 @@
 #======================================================================
 # Importation des modules
 #======================================================================
+. $PSScriptRoot\src\Setup.ps1
 . $PSScriptRoot\src\Display.ps1
 . $PSScriptRoot\src\Options.ps1
-. $PSScriptRoot\src\Setup.ps1
 
 Import-Module "$PSScriptRoot\src\Toolbox.psm1" -Force -DisableNameChecking
 Import-Module "$PSScriptRoot\src\ZipArchive.psm1" -Force -DisableNameChecking
 Import-Module "$PSScriptRoot\src\HashCheck.psm1" -Force -DisableNameChecking
-Import-Module "$PSScriptRoot\src\GitInstall\gitinstall.psm1" -Force -DisableNameChecking
+Import-Module "$PSScriptRoot\src\GitInstall\InstallGit.psm1" -Force -DisableNameChecking
+Import-Module "$PSScriptRoot\src\GitInstall\CloneRepo.psm1" -Force -DisableNameChecking
+Import-Module "$PSScriptRoot\src\GitInstall\RemoveRepo.psm1" -Force -DisableNameChecking
 Import-Module "$PSScriptRoot\src\Winget\winget.psm1" -Force -DisableNameChecking
 
 #======================================================================
 # Affichage du menu principal
 #======================================================================
 function Show-MainMenu {
-    Write-Log "Starting Main Menu"
     Clear-Host
     Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Green
     Write-Host "║            WINDOWS TOOLKIT           ║" -ForegroundColor Green
@@ -46,33 +47,26 @@ function Start-MainMenu {
         switch ($choice) {
             "1" {
                 Start-ToolboxMenu
-                Write-Log "Choice 1 selected : Toolbox Menu"
             }
             "2" {
                 Start-ZipMenu
-                Write-Log "Choice 2 selected : Zip Archive Menu"
             }
             "3" {
                 Start-HashMenu
-                Write-Log "Choice 3 selected : HashCheck Menu"
             }
             "4" {
                 Start-Git
-                Write-Log "Choice 4 selected : Git Menu"
             }
             "5" {
                 Start-WingetMenu
-                Write-Log "Choice 5 selected : WinGet Menu"
             }
             "0" {
                 Clear-Host
-                Write-Log "════════════════════════════════════════════ Exiting 1337phtm's Windows Toolkit ════════════════════════════════════════════";
                 return
             }
             default {
                 Write-Host ""
                 Write-Host "Invalid choice. Please try again." -ForegroundColor Red
-                Write-ErrorLog -Source "Main Menu" -Message "Invalid choice : $choice" -Silent
                 Stop-Screen
             }
         }
@@ -82,5 +76,4 @@ function Start-MainMenu {
 #======================================================================
 # Démarrage du programme
 #======================================================================
-Write-Log "════════════════════════════════════════════ 1337phtm's Windows Toolkit started ════════════════════════════════════════════"
 Start-MainMenu

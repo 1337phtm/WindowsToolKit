@@ -6,7 +6,6 @@
 #======================================================================
 
 function Show-WindowsRepair {
-    Write-Log "Displaying Windows repair menu"
     Clear-Host
     Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Cyan
     Write-Host "║              REPAIR MENU             ║" -ForegroundColor Cyan
@@ -20,7 +19,6 @@ function Show-WindowsRepair {
 }
 
 function Show-Diskpart {
-    Write-Log "Displaying Diskpart menu" 
     Clear-Host
     Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Blue
     Write-Host "║            DISKPART MENU             ║" -ForegroundColor Blue
@@ -34,7 +32,6 @@ function Show-Diskpart {
 }
 
 function Show-NetworkTools {
-    Write-Log "Displaying Network Tools menu"
     Clear-Host
     Write-Host "╔══════════════════════════════════════╗" -ForegroundColor DarkBlue
     Write-Host "║             NETWORK MENU             ║" -ForegroundColor DarkBlue
@@ -53,7 +50,6 @@ function Show-NetworkTools {
 #======================================================================
 
 function Get-SystemInfo {
-    Write-Log "Displaying system information menu"
     Clear-Host
     Write-Host ""
     Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Cyan
@@ -96,8 +92,7 @@ function Get-FixWin {
             "2" { SFC }
             "0" { return }
             default {
-                Write-Host "Invalid choice." -ForegroundColor Red
-                Write-ErrorLog -Source "Windows Repair" -Message "Invalid choice : $choice" -Silent
+                Write-Status ERROR "Invalid choice."
                 Stop-Screen
             }
         }
@@ -118,8 +113,7 @@ function Get-Diskpart {
             "2" { Write-Host "Diskpart tool 2 (coming soon)"; Stop-Screen }
             "0" { return }
             default {
-                Write-Host "Invalid choice." -ForegroundColor Red
-                Write-ErrorLog -Source "Diskpart" -Message "Invalid choice : $choice" -Silent
+                Write-Status ERROR "Invalid choice."
                 Stop-Screen
             }
         }
@@ -141,8 +135,7 @@ function Get-NetworkTools {
             "3" { Get-SpeedTest }
             "0" { return }
             default {
-                Write-Host "Invalid choice." -ForegroundColor Red
-                Write-ErrorLog -Source "Network Tools" -Message "Invalid choice : $choice" -Silent
+                Write-Status ERROR "Invalid choice."
                 Stop-Screen
             }
         }
@@ -154,7 +147,6 @@ function Get-NetworkTools {
 #======================================================================
 
 function DISM {
-    Write-Log "Launching DISM"
     Write-Host ""
     Write-Host "Launching DISM /Online /Cleanup-Image /RestoreHealth..." -ForegroundColor Yellow
     Write-Host ""
@@ -165,18 +157,15 @@ function DISM {
         }
     }
     catch {
-        Write-ErrorLog -Source "TOOLBOX | DISM" -Message $_.Exception.Message
         Stop-Screen
         return
     }
     Write-Host ""
     Write-Host "DISM completed." -ForegroundColor Green
-    Write-Log "DISM finished"
     Stop-Screen
 }
 
 function SFC {
-    Write-Log "Launching SFC"
     Write-Host ""
     Write-Host "Launching SFC /scannow..." -ForegroundColor Yellow
     Write-Host ""
@@ -187,13 +176,12 @@ function SFC {
         }
     }
     catch { 
-        Write-ErrorLog -Source "TOOLBOX | SFC" -Message $_.Exception.Message
+        Write-Status ERROR "SFC failed with exit code $LASTEXITCODE"
         Stop-Screen
         return
     }
     Write-Host ""
     Write-Host "SFC completed." -ForegroundColor Green
-    Write-Log "SFC finished" 
     Stop-Screen
 }
 
@@ -203,7 +191,6 @@ function SFC {
 
 function Get-NetworkInformations {
     Clear-Host
-    Write-Log "Displaying network informations"
 
     try {
         $adapters = Get-NetAdapter -ErrorAction Stop
@@ -228,7 +215,7 @@ function Get-NetworkInformations {
             }
         }
         catch {
-            Write-ErrorLog -Source "Network Informations" -Message $_.Exception.Message
+            Write-Status ERROR "Failed to retrieve network informations."
             Stop-Screen
             return
         }
@@ -255,7 +242,6 @@ function Test-Ping {
         return
     }
 
-    Write-Log "Ping sent to $target"
     Write-Host ""
     Write-Host "Testing connection to $target..."
     Write-Host ""
@@ -267,7 +253,6 @@ function Test-Ping {
         }
     }
     catch {
-        Write-ErrorLog -Source "Ping to $target" -Message $_.Exception.Message
         Stop-Screen
         return
         }
@@ -280,7 +265,6 @@ function Test-Ping {
 
 function Get-SpeedTest {
     Clear-Host
-    Write-Log "SpeedTest requested"
 
     $SpeedtestId = "Ookla.Speedtest.CLI"
 
@@ -304,7 +288,6 @@ function Get-SpeedTest {
 
     if (-not (Test-Internet)) {
         Write-Host "No internet access. Aborting SpeedTest." -ForegroundColor Red
-        Write-ErrorLog -Source "SpeedTest" -Message "No internet access detected."
         Stop-Screen
         return
     }
@@ -353,10 +336,9 @@ function Get-SpeedTest {
             }
         }
 
-        Write-Log "SpeedTest finished"
     }
     catch {
-        Write-ErrorLog -Source "SpeedTest" -Message $_.Exception.Message
+        Write-Status ERROR "SpeedTest failed with exit code $LASTEXITCODE"
     }
 
     Stop-Screen

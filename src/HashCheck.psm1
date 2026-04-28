@@ -21,7 +21,6 @@ function Select-Folder($message) {
         return $Folder.Items().Item().Path
     }
     else {
-        Write-ErrorLog -Source "HASH CHECK | SELECTFOLDER" -Message "User canceled folder selection" -Silent
         return "CANCELED"
     }
 }
@@ -60,7 +59,6 @@ function Get-HashCheckCopy {
         Write-Host ""
         Write-Host "You need at least 2 cases to compare." -ForegroundColor Red
         Write-Host ""
-        Write-ErrorLog -Source "HASH CHECK | SELECTFOLDER" -Message "User choose less than 2 cases to compare." -Silent
         Pause
         return
     }
@@ -124,7 +122,6 @@ function Get-HashCheckVerify {
         Write-Host ""
         Write-Host "You need at least 2 cases to compare." -ForegroundColor Red
         Write-Host ""
-        Write-ErrorLog -Source "HASH CHECK | SELECTFOLDER" -Message "User choose less than 2 cases to compare." -Silent
         Pause
         return
     }

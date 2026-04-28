@@ -1,5 +1,4 @@
 ﻿function Show-ToolboxMenu {
-    Write-Log "Displaying Windows toolbox menu"
     Clear-Host
     Write-Host "╔══════════════════════════════════════╗" -ForegroundColor DarkCyan
     Write-Host "║             TOOLBOX MENU             ║" -ForegroundColor DarkCyan
@@ -15,7 +14,6 @@
 }
 
 function Show-ZipMenu {
-    Write-Log "Displaying Zip Archive menu"
     Clear-Host
     Write-Host "╔══════════════════════════════════════╗" -ForegroundColor DarkYellow
     Write-Host "║            Archive Backup            ║" -ForegroundColor DarkYellow
@@ -29,7 +27,6 @@ function Show-ZipMenu {
 }
 
 function Show-HashMainMenu {
-    Write-Log "Displaying Hash Check menu"
     Clear-Host
     Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Magenta
     Write-Host "║             HASHCHECK MENU           ║" -ForegroundColor Magenta
@@ -58,7 +55,6 @@ function Show-GitMenu {
 }
 
 function Show-WingetMenu {
-    Write-Log "Starting Main Menu"
     Clear-Host
     Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Green
     Write-Host "║              WINGET MENU             ║" -ForegroundColor Green
