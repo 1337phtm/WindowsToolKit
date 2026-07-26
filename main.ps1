@@ -4,9 +4,9 @@
 #======================================================================
 # Importation des modules
 #======================================================================
-. $PSScriptRoot\src\Setup.ps1
-. $PSScriptRoot\src\Display.ps1
-. $PSScriptRoot\src\Options.ps1
+. "$PSScriptRoot\src\Setup.ps1"
+. "$PSScriptRoot\src\Display.ps1"
+. "$PSScriptRoot\src\Options.ps1"
 
 Import-Module "$PSScriptRoot\src\Toolbox.psm1" -Force -DisableNameChecking
 Import-Module "$PSScriptRoot\src\ZipArchive.psm1" -Force -DisableNameChecking

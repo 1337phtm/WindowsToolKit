@@ -1,0 +1,62 @@
+Caption                      : NVIDIA GeForce RTX 4070 SUPER
+Description                  : NVIDIA GeForce RTX 4070 SUPER
+InstallDate                  :
+Name                         : NVIDIA GeForce RTX 4070 SUPER
+Status                       : OK
+Availability                 : 3
+ConfigManagerErrorCode       : 0
+ConfigManagerUserConfig      : False
+CreationClassName            : Win32_VideoController
+DeviceID                     : VideoController1
+ErrorCleared                 :
+ErrorDescription             :
+LastErrorCode                :
+PNPDeviceID                  : PCI\VEN_10DE&DEV_2783&SUBSYS_413B1458&REV_A1\4&256A0AA8&0&0008
+PowerManagementCapabilities  :
+PowerManagementSupported     :
+StatusInfo                   :
+SystemCreationClassName      : Win32_ComputerSystem
+SystemName                   : PC1-PHANTOM
+MaxNumberControlled          :
+ProtocolSupported            :
+TimeOfLastReset              :
+AcceleratorCapabilities      :
+CapabilityDescriptions       :
+CurrentBitsPerPixel          : 32
+CurrentHorizontalResolution  : 1920
+CurrentNumberOfColors        : 4294967296
+CurrentNumberOfColumns       : 0
+CurrentNumberOfRows          : 0
+CurrentRefreshRate           : 60
+CurrentScanMode              : 4
+CurrentVerticalResolution    : 1080
+MaxMemorySupported           :
+MaxRefreshRate               : 60
+MinRefreshRate               : 50
+NumberOfVideoPages           :
+VideoMemoryType              : 2
+VideoProcessor               : NVIDIA GeForce RTX 4070 SUPER
+NumberOfColorPlanes          :
+VideoArchitecture            : 5
+VideoMode                    :
+AdapterCompatibility         : NVIDIA
+AdapterDACType               : Integrated RAMDAC
+AdapterRAM                   : 4293918720
+ColorTableEntries            :
+DeviceSpecificPens           :
+DitherType                   : 0
+DriverDate                   : 02/07/2026 02:00:00
+DriverVersion                : 32.0.16.1074
+ICMIntent                    :
+ICMMethod                    :
+InfFilename                  : oem28.inf
+InfSection                   : Section059
+InstalledDisplayDrivers      : C:\WINDOWS\System32\DriverStore\FileRepository\nv_dispi.inf_amd64_b26cc1edfbb8f4d0\nvldumdx.dll,C:\WINDOWS\System32\DriverStore\FileRepository
+                               \nv_dispi.inf_amd64_b26cc1edfbb8f4d0\nvldumdx.dll,C:\WINDOWS\System32\DriverStore\FileRepository\nv_dispi.inf_amd64_b26cc1edfbb8f4d0\nvldumdx.
+                               dll,C:\WINDOWS\System32\DriverStore\FileRepository\nv_dispi.inf_amd64_b26cc1edfbb8f4d0\nvldumdx.dll
+Monochrome                   : False
+ReservedSystemPaletteEntries :
+SpecificationVersion         :
+SystemPaletteEntries         :
+VideoModeDescription         : 1920 x 1080 x 4294967296 couleurs
+PSComputerName               :

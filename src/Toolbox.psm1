@@ -1,6 +1,8 @@
 ﻿# Toolbox.psm1
 # Outils système Windows (DISM, SFC, réseau, etc.)
 
+. "$PSScriptRoot\Setup.ps1"
+
 #======================================================================
 # Menus d'affichage
 #======================================================================
@@ -55,26 +57,151 @@ function Get-SystemInfo {
     Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Cyan
     Write-Host "║           SYSTEM INFORMATION         ║" -ForegroundColor Cyan
     Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Cyan
-    Write-Host ""
+
+    # Création du tableau global
+    $SystemInfo = @()
+
+    # ==========================
+    # WINDOWS
+    # ==========================
 
     $info = Get-ComputerInfo
+    $SystemInfo += [PSCustomObject]@{
+        Categorie   = "Windows"
+        Information = "Product Name"
+        Valeur      = $info.WindowsProductName
+    }
 
-    Write-Host " Windows Product Name : $($info.WindowsProductName)"
-    Write-Host " Registered Owner     : $($info.WindowsRegisteredOwner)"
-    Write-Host " HostName             : $($info.CsDNSHostName)"
-    Write-Host " Memory               : $($info.CsPhyicallyInstalledMemory)"
-    Write-Host " OS Name              : $($info.OsName)"
-    Write-Host ""
+    $SystemInfo += [PSCustomObject]@{
+        Categorie   = "Windows"
+        Information = "Registered Owner"
+        Valeur      = $info.WindowsRegisteredOwner
+    }
 
-    Write-Host " CPU Informations :" -ForegroundColor Yellow
-    $info.CsProcessors |
-        Select-Object Name,
-                      @{ Name = 'Cores';   Expression = { $_.NumberOfCores } },
-                      @{ Name = 'Threads'; Expression = { $_.NumberOfLogicalProcessors } },
-                      MaxClockSpeed,
-                      Manufacturer |
-        Format-Table -AutoSize
+    $SystemInfo += [PSCustomObject]@{
+        Categorie   = "Windows"
+        Information = "Hostname"
+        Valeur      = $info.CsDNSHostName
+    }
 
+    $SystemInfo += [PSCustomObject]@{
+        Categorie   = "Windows"
+        Information = "Username"
+        Valeur      = $info.CsUserName
+    }
+
+    $SystemInfo += [PSCustomObject]@{
+        Categorie   = "Windows"
+        Information = "OS Name"
+        Valeur      = $info.OsName
+    }
+
+    # ==========================
+    # CPU
+    # ==========================
+
+    $cpu = Get-CimInstance Win32_Processor
+    $SystemInfo += [PSCustomObject]@{
+        Categorie   = "CPU"
+        Information = "Model"
+        Valeur      = $cpu.Name
+    }
+
+    $SystemInfo += [PSCustomObject]@{
+        Categorie   = "CPU"
+        Information = "Cores"
+        Valeur      = $cpu.NumberOfCores
+    }
+
+    $SystemInfo += [PSCustomObject]@{
+        Categorie   = "CPU"
+        Information = "Threads"
+        Valeur      = $cpu.NumberOfLogicalProcessors
+    }
+
+    $SystemInfo += [PSCustomObject]@{
+        Categorie   = "CPU"
+        Information = "Frequency"
+        Valeur      = "$($cpu.MaxClockSpeed) MHz"
+    }
+
+    # ==========================
+    # GPU
+    # ==========================
+
+    $gpu = Get-CimInstance Win32_VideoController
+    foreach ($card in $gpu) {
+
+        $SystemInfo += [PSCustomObject]@{
+            Categorie   = "GPU"
+            Information = "Model"
+            Valeur      = $card.Name
+        }
+
+        $SystemInfo += [PSCustomObject]@{
+            Categorie   = "GPU"
+            Information = "VRAM"
+            Valeur      = "{0} GB" -f ([math]::Round($card.AdapterRAM / 1GB, 2))
+        }
+
+        $SystemInfo += [PSCustomObject]@{
+            Categorie   = "GPU"
+            Information = "Driver"
+            Valeur      = $card.DriverVersion
+        }
+    }
+
+    # ==========================
+    # RAM
+    # ==========================
+
+    $os = Get-CimInstance Win32_OperatingSystem
+    $computer = Get-CimInstance Win32_ComputerSystem
+
+    $total = $computer.TotalPhysicalMemory
+    $free = $os.FreePhysicalMemory * 1KB
+    $used = $total - $free
+
+    $SystemInfo += [PSCustomObject]@{
+        Categorie   = "RAM"
+        Information = "Installed"
+        Valeur      = "{0} GB" -f ([math]::Round($total / 1GB, 2))
+    }
+
+    $SystemInfo += [PSCustomObject]@{
+        Categorie   = "RAM"
+        Information = "Used"
+        Valeur      = "{0} GB" -f ([math]::Round($used / 1GB, 2))
+    }
+
+    $SystemInfo += [PSCustomObject]@{
+        Categorie   = "RAM"
+        Information = "Available"
+        Valeur      = "{0} GB" -f ([math]::Round($free / 1GB, 2))
+    }
+
+    # ==========================
+    # DISQUES
+    # ==========================
+
+    $disks = Get-CimInstance Win32_LogicalDisk -Filter "DriveType=3"
+
+    foreach ($disk in $disks) {
+
+        $SystemInfo += [PSCustomObject]@{
+            Categorie   = "Disk"
+            Information = "$($disk.DeviceID) Total"
+            Valeur      = "{0} GB" -f ([math]::Round($disk.Size / 1GB, 2))
+        }
+
+        $SystemInfo += [PSCustomObject]@{
+            Categorie   = "Disk"
+            Information = "$($disk.DeviceID) Free"
+            Valeur      = "{0} GB" -f ([math]::Round($disk.FreeSpace / 1GB, 2))
+        }
+    }
+
+    $SystemInfo | Format-Table -GroupBy Categorie -AutoSize
     Stop-Screen
 }
 
@@ -151,7 +278,7 @@ function DISM {
     Write-Host "Launching DISM /Online /Cleanup-Image /RestoreHealth..." -ForegroundColor Yellow
     Write-Host ""
     try {
-        Start-Process -FilePath "dism.exe" -ArgumentList "/Online","/Cleanup-Image","/RestoreHealth" -Verb RunAs -Wait
+        Start-Process -FilePath "dism.exe" -ArgumentList "/Online", "/Cleanup-Image", "/RestoreHealth" -Verb RunAs -Wait
         if ($LASTEXITCODE -ne 0) {
             throw "DISM failed with exit code $LASTEXITCODE"
         }
@@ -175,7 +302,7 @@ function SFC {
             throw "SFC failed with exit code $LASTEXITCODE"
         }
     }
-    catch { 
+    catch {
         Write-Status ERROR "SFC failed with exit code $LASTEXITCODE"
         Stop-Screen
         return
@@ -194,7 +321,7 @@ function Get-NetworkInformations {
 
     try {
         $adapters = Get-NetAdapter -ErrorAction Stop
-        
+
         Write-Host ""
         Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Green
         Write-Host "║           NETWORK INFORMATIONS       ║" -ForegroundColor Green
@@ -212,14 +339,14 @@ function Get-NetworkInformations {
             Write-Host " MAC Address  : $($adapter.MacAddress)"
             Write-Host " Max Link speed : $($adapter.LinkSpeed)"
             Write-Host ""
-            }
         }
-        catch {
-            Write-Status ERROR "Failed to retrieve network informations."
-            Stop-Screen
-            return
-        }
+    }
+    catch {
+        Write-Status ERROR "Failed to retrieve network informations."
         Stop-Screen
+        return
+    }
+    Stop-Screen
 }
 
 #======================================================================
@@ -255,9 +382,9 @@ function Test-Ping {
     catch {
         Stop-Screen
         return
-        }
-    Stop-Screen
     }
+    Stop-Screen
+}
 
 #======================================================================
 # NetworkTools -- SpeedTest
