@@ -26,7 +26,7 @@ function Show-Diskpart {
     Write-Host "║            DISKPART MENU             ║" -ForegroundColor Blue
     Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Blue
     Write-Host ""
-    Write-Host "[1]  (reserved for future tools)"
+    Write-Host "[1]  TEst Diskpart"
     Write-Host "[2]  (reserved for future tools)"
     Write-Host ""
     Write-Host "[0]  Back" -ForegroundColor DarkGray
@@ -236,7 +236,7 @@ function Get-Diskpart {
         $choice = Read-Host "Select an option"
 
         switch ($choice) {
-            "1" { Write-Host "Diskpart tool 1 (coming soon)"; Stop-Screen }
+            "1" { TEST-Test }
             "2" { Write-Host "Diskpart tool 2 (coming soon)"; Stop-Screen }
             "0" { return }
             default {
@@ -312,6 +312,24 @@ function SFC {
     Stop-Screen
 }
 
+#======================================================================
+# Diskpart -- Disk Informations
+#======================================================================
+function TEST-Test {
+    Clear-Host
+    Write-Host ""
+    Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Blue
+    Write-Host "║          DISKPART INFORMATION        ║" -ForegroundColor Blue
+    Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Blue
+    Write-Host ""
+    @"
+list disk
+select disk 0
+detail disk
+exit
+"@ | diskpart
+
+}
 #======================================================================
 # NetworkTools -- Network Informations
 #======================================================================
